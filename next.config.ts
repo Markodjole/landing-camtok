@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
       process.env.NEXT_PUBLIC_WAITLIST_TO_EMAIL ??
       process.env.WAITLIST_TO_EMAIL ??
       "",
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:
+      process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ??
+      process.env.GOOGLE_MAPS_API_KEY ??
+      "",
   },
 };
 
