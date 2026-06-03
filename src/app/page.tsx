@@ -36,9 +36,9 @@ export default function HomePage() {
                 </div>
               </div>
               <p className="hero-lead">
-                Crosstown is live dashcam betting — real drivers, real streets,
-                real-time GPS. Watch the stream, read the map, and bet on the
-                next turn, zone, or route before it happens.
+                Crosstown is live POV prediction gaming — real drivers, real
+                streets, real-time GPS. Watch the stream, read the map, and call
+                the next turn, zone, or route before it happens.
               </p>
               <div className="hero-actions">
                 <a href="#early-access" className="btn-primary">
@@ -69,8 +69,8 @@ export default function HomePage() {
             <p className="section-label">How it works</p>
             <h2 className="section-title">Three steps. Zero scripts.</h2>
             <p className="section-lead">
-              Every market is tied to live GPS and a shared room timeline — so
-              bets lock before the outcome, and everyone sees the same truth.
+              Every round is tied to live GPS and a shared room timeline — so
+              calls lock before the outcome, and everyone sees the same truth.
             </p>
 
             <div className="steps">
@@ -78,7 +78,7 @@ export default function HomePage() {
                 <div className="step-num">1</div>
                 <h3>Watch live</h3>
                 <p>
-                  Join a live room. Dashcam on top, map below. See where the
+                  Join a live room. POV stream on top, map below. See where the
                   driver is heading in real time.
                 </p>
               </article>
@@ -87,33 +87,34 @@ export default function HomePage() {
                 <h3>Pick your call</h3>
                 <p>
                   Left or right at the next junction? Which zone comes next?
-                  How many straight crossroads? Stake before the window locks.
+                  How many straight crossroads? Lock in your call before the
+                  window closes.
                 </p>
               </article>
               <article className="step">
                 <div className="step-num">3</div>
                 <h3>Win on the move</h3>
                 <p>
-                  The route reveals the answer. Correct predictions split the
-                  pool. Skill beats luck when you read the city.
+                  The route reveals the answer. Correct predictions score the
+                  round. Skill beats luck when you read the city.
                 </p>
               </article>
             </div>
           </div>
         </section>
 
-        <section id="markets">
+        <section id="predictions">
           <div className="container">
-            <p className="section-label">What you bet on</p>
-            <h2 className="section-title">Markets built for the road</h2>
+            <p className="section-label">What you predict</p>
+            <h2 className="section-title">Calls built for the road</h2>
             <p className="section-lead">
-              Not random clips — live route-state markets generated from GPS,
+              Not random clips — live route-state prompts generated from GPS,
               grid zones, and upcoming decisions on the map.
             </p>
 
-            <div className="bet-grid">
-              <article className="bet-card">
-                <div className="bet-icon" aria-hidden>
+            <div className="call-grid">
+              <article className="call-card">
+                <div className="call-icon" aria-hidden>
                   ↰
                 </div>
                 <h3>Next turn</h3>
@@ -122,8 +123,8 @@ export default function HomePage() {
                   junction?
                 </p>
               </article>
-              <article className="bet-card">
-                <div className="bet-icon" aria-hidden>
+              <article className="call-card">
+                <div className="call-icon" aria-hidden>
                   ▦
                 </div>
                 <h3>Next zone</h3>
@@ -132,8 +133,8 @@ export default function HomePage() {
                   the border?
                 </p>
               </article>
-              <article className="bet-card">
-                <div className="bet-icon" aria-hidden>
+              <article className="call-card">
+                <div className="call-icon" aria-hidden>
                   ═
                 </div>
                 <h3>Straight streak</h3>
@@ -142,14 +143,14 @@ export default function HomePage() {
                   straight run.
                 </p>
               </article>
-              <article className="bet-card">
-                <div className="bet-icon" aria-hidden>
+              <article className="call-card">
+                <div className="call-icon" aria-hidden>
                   ◎
                 </div>
                 <h3>Next step</h3>
                 <p>
-                  Predict the next maneuver on the route — pin drops on the map
-                  when the market opens.
+                  Predict the next maneuver on the route — a marker drops on the
+                  map when the round opens.
                 </p>
               </article>
             </div>
@@ -162,14 +163,14 @@ export default function HomePage() {
               <div className="feature">
                 <h3>Live WebRTC stream</h3>
                 <p>
-                  Real dashcam feed from the driver&apos;s phone — not
-                  pre-recorded video.
+                  Real POV feed from the driver&apos;s phone — not pre-recorded
+                  video.
                 </p>
               </div>
               <div className="feature">
-                <h3>GPS-fair markets</h3>
+                <h3>GPS-fair rounds</h3>
                 <p>
-                  Bets lock with distance rules. Outcomes settle from movement,
+                  Calls lock with distance rules. Outcomes settle from movement,
                   not opinions.
                 </p>
               </div>
@@ -210,15 +211,16 @@ export default function HomePage() {
               <article className="for-you-card">
                 <h3>Viewers</h3>
                 <p>
-                  Follow the dashcam and map, read the next junction, and stake
-                  before the bet window locks. Every outcome settles from GPS.
+                  Follow the POV stream and map, read the next junction, and
+                  lock in your call before the window closes. Every outcome
+                  settles from GPS.
                 </p>
               </article>
               <article className="for-you-card">
                 <h3>Drivers</h3>
                 <p>
                   Stream from your phone, keep driving normally, and let viewers
-                  bet on your next moves. Early rooms opening city by city.
+                  predict your next moves. Early rooms opening city by city.
                 </p>
               </article>
               <article className="for-you-card">
