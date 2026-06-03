@@ -370,8 +370,10 @@ button {
   pointer-events: none;
 }
 
-/* Map prediction demo overlay */
+/* Map prediction demo overlay — synced to video loop, no chrome */
 .hero-map-demo {
+  --press: 0;
+  --ok: 0;
   position: absolute;
   z-index: 3;
   inset: 0;
@@ -379,367 +381,92 @@ button {
   place-items: center;
   padding: 2.85rem 0.65rem 0.65rem;
   pointer-events: none;
+  opacity: 0;
 }
 
-.hero-map-demo-card {
-  position: relative;
-  width: min(100%, 15.5rem);
-  min-height: 9.25rem;
-  display: grid;
-  place-items: center;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(8, 8, 12, 0.72);
-  backdrop-filter: blur(14px);
-  box-shadow:
-    0 18px 48px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  overflow: hidden;
-}
-
-.hero-map-demo-card::before {
-  content: "";
+.hero-map-demo-dots,
+.hero-map-demo-hit,
+.hero-map-demo-ok {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    145deg,
-    rgba(var(--purple-rgb), 0.12) 0%,
-    transparent 42%,
-    rgba(109, 255, 0, 0.04) 100%
-  );
+  opacity: 0;
   pointer-events: none;
 }
 
-.hero-map-demo-ring {
-  position: absolute;
-  width: 4.5rem;
-  height: 4.5rem;
-  opacity: 0;
-  animation: hero-map-demo-ring 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.hero-map-demo-ring-svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.hero-map-demo-ring-track {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-width: 3;
-}
-
-.hero-map-demo-ring-progress {
-  fill: none;
-  stroke: var(--purple);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-dasharray: 213.6;
-  stroke-dashoffset: 213.6;
-  animation: hero-map-demo-ring-draw 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  filter: drop-shadow(0 0 6px rgba(var(--purple-rgb), 0.55));
-}
-
-.hero-map-demo-countdown,
-.hero-map-demo-call,
-.hero-map-demo-success {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 0.35rem;
-  padding: 1rem;
-  text-align: center;
-}
-
-.hero-map-demo-num {
-  position: absolute;
-  font-size: 2.35rem;
-  font-weight: 500;
-  letter-spacing: -0.04em;
-  color: var(--text);
-  opacity: 0;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
-}
-
-.hero-map-demo-num-3 {
-  animation: hero-map-demo-num-3 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.hero-map-demo-num-2 {
-  animation: hero-map-demo-num-2 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.hero-map-demo-num-1 {
-  animation: hero-map-demo-num-1 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.hero-map-demo-call {
-  opacity: 0;
-  animation: hero-map-demo-call 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.hero-map-demo-kicker {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 0.15rem;
-}
-
-.hero-map-demo-actions {
+.hero-map-demo-dots {
   display: flex;
-  gap: 0.35rem;
-  margin-bottom: 0.55rem;
+  gap: 0.45rem;
+  align-items: center;
+  transition: opacity 0.25s ease;
 }
 
-.hero-map-demo-option {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  padding: 0.28rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.03);
+.hero-map-demo-dot {
+  width: 0.38rem;
+  height: 0.38rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
 }
 
-.hero-map-demo-option-active {
-  color: var(--text);
-  border-color: rgba(var(--purple-rgb), 0.45);
-  background: rgba(var(--purple-rgb), 0.18);
-  box-shadow: 0 0 0 1px rgba(var(--purple-rgb), 0.15);
+.hero-map-demo[data-step="countdown"] .hero-map-demo-dots {
+  opacity: 1;
 }
 
-.hero-map-demo-press {
-  position: relative;
+.hero-map-demo-hit {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-}
-
-.hero-map-demo-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 6.75rem;
-  padding: 0.55rem 1.15rem;
-  border-radius: 0.65rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--text);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  animation: hero-map-demo-btn-press 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.hero-map-demo-ripple {
-  position: absolute;
-  width: 6.75rem;
-  height: 2.35rem;
-  border-radius: 0.65rem;
-  border: 1px solid rgba(109, 255, 0, 0.45);
+  background: rgba(var(--purple-rgb), 0.1);
+  color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 14px rgba(var(--purple-rgb), 0.1);
   opacity: 0;
-  animation: hero-map-demo-ripple 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform: scale(calc(0.94 - var(--press) * 0.06));
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease,
+    background 0.12s ease;
 }
 
-.hero-map-demo-success {
+.hero-map-demo[data-step="press"] .hero-map-demo-hit {
+  opacity: calc(0.08 + var(--press) * 0.28);
+  background: rgba(109, 255, 0, calc(0.06 + var(--press) * 0.12));
+  color: rgba(220, 255, 180, calc(0.35 + var(--press) * 0.3));
+  box-shadow: 0 0 18px rgba(109, 255, 0, calc(var(--press) * 0.14));
+}
+
+.hero-map-demo-chevron {
+  width: 1rem;
+  height: 1rem;
+}
+
+.hero-map-demo-ok {
+  width: 1.65rem;
+  height: 1.65rem;
+  color: rgba(109, 255, 0, 0.7);
   opacity: 0;
-  animation: hero-map-demo-success 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform: scale(calc(0.86 + var(--ok) * 0.14));
+  filter: drop-shadow(0 0 6px rgba(109, 255, 0, calc(var(--ok) * 0.2)));
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
-.hero-map-demo-check-wrap {
-  width: 3rem;
-  height: 3rem;
-  margin-bottom: 0.35rem;
-}
-
-.hero-map-demo-check-svg {
-  width: 100%;
-  height: 100%;
-}
-
-.hero-map-demo-check-circle {
-  fill: none;
-  stroke: rgba(109, 255, 0, 0.35);
-  stroke-width: 2.5;
-  stroke-dasharray: 145;
-  stroke-dashoffset: 145;
-  animation: hero-map-demo-check-circle 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.hero-map-demo-check-mark {
-  stroke: var(--green);
-  stroke-dasharray: 36;
-  stroke-dashoffset: 36;
-  animation: hero-map-demo-check-mark 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  filter: drop-shadow(0 0 8px rgba(109, 255, 0, 0.45));
-}
-
-.hero-map-demo-success-title {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--green);
-  letter-spacing: 0.01em;
-}
-
-.hero-map-demo-success-sub {
-  font-size: 0.6875rem;
-  color: rgba(255, 255, 255, 0.52);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-@keyframes hero-map-demo-ring {
-  0%, 1% { opacity: 0; }
-  3%, 36% { opacity: 1; }
-  38%, 100% { opacity: 0; }
-}
-
-@keyframes hero-map-demo-ring-draw {
-  0%, 3% { stroke-dashoffset: 213.6; }
-  36% { stroke-dashoffset: 0; }
-  38%, 100% { stroke-dashoffset: 0; }
-}
-
-@keyframes hero-map-demo-num-3 {
-  0%, 1% { opacity: 0; transform: scale(0.86); }
-  3%, 10% { opacity: 1; transform: scale(1); }
-  13%, 100% { opacity: 0; transform: scale(1.06); }
-}
-
-@keyframes hero-map-demo-num-2 {
-  0%, 13% { opacity: 0; transform: scale(0.86); }
-  15%, 22% { opacity: 1; transform: scale(1); }
-  25%, 100% { opacity: 0; transform: scale(1.06); }
-}
-
-@keyframes hero-map-demo-num-1 {
-  0%, 25% { opacity: 0; transform: scale(0.86); }
-  27%, 34% { opacity: 1; transform: scale(1); }
-  37%, 100% { opacity: 0; transform: scale(1.06); }
-}
-
-@keyframes hero-map-demo-call {
-  0%, 37% { opacity: 0; transform: translateY(6px) scale(0.97); }
-  40%, 56% { opacity: 1; transform: translateY(0) scale(1); }
-  59%, 100% { opacity: 0; transform: translateY(-4px) scale(0.98); }
-}
-
-@keyframes hero-map-demo-btn-press {
-  0%, 46% {
-    transform: scale(1);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
-    border-color: rgba(255, 255, 255, 0.18);
-    color: var(--text);
-    box-shadow:
-      0 8px 20px rgba(0, 0, 0, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  }
-  48% {
-    transform: scale(0.94);
-    background: linear-gradient(180deg, rgba(109, 255, 0, 0.28) 0%, rgba(109, 255, 0, 0.14) 100%);
-    border-color: rgba(109, 255, 0, 0.55);
-    color: #f8ffe8;
-    box-shadow:
-      0 4px 14px rgba(0, 0, 0, 0.4),
-      0 0 20px rgba(109, 255, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-  50%, 56% {
-    transform: scale(1);
-    background: linear-gradient(180deg, rgba(109, 255, 0, 0.32) 0%, rgba(109, 255, 0, 0.16) 100%);
-    border-color: rgba(109, 255, 0, 0.6);
-  }
-  59%, 100% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-}
-
-@keyframes hero-map-demo-ripple {
-  0%, 47% { opacity: 0; transform: scale(1); }
-  48% { opacity: 0.85; transform: scale(1); }
-  54%, 100% { opacity: 0; transform: scale(1.35); }
-}
-
-@keyframes hero-map-demo-success {
-  0%, 58% { opacity: 0; transform: scale(0.94); }
-  61%, 88% { opacity: 1; transform: scale(1); }
-  93%, 100% { opacity: 0; transform: scale(1.02); }
-}
-
-@keyframes hero-map-demo-check-circle {
-  0%, 59% { stroke-dashoffset: 145; }
-  64% { stroke-dashoffset: 0; }
-  88%, 100% { stroke-dashoffset: 0; }
-}
-
-@keyframes hero-map-demo-check-mark {
-  0%, 63% { stroke-dashoffset: 36; }
-  68% { stroke-dashoffset: 0; }
-  88%, 100% { stroke-dashoffset: 0; }
+.hero-map-demo[data-step="success"] .hero-map-demo-ok {
+  opacity: calc(var(--ok) * 0.38);
 }
 
 @media (max-width: 899px) {
   .hero-map-demo {
     padding-top: 2.35rem;
   }
-
-  .hero-map-demo-card {
-    width: min(100%, 13.25rem);
-    min-height: 8rem;
-  }
-
-  .hero-map-demo-num {
-    font-size: 2rem;
-  }
-
-  .hero-map-demo-btn {
-    min-width: 6rem;
-    font-size: 0.8125rem;
-    padding: 0.5rem 1rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-map-demo-ring,
-  .hero-map-demo-ring-progress,
-  .hero-map-demo-num,
-  .hero-map-demo-call,
-  .hero-map-demo-btn,
-  .hero-map-demo-ripple,
-  .hero-map-demo-success,
-  .hero-map-demo-check-circle,
-  .hero-map-demo-check-mark {
-    animation: none !important;
-  }
-
-  .hero-map-demo-ring {
-    opacity: 0;
-  }
-
-  .hero-map-demo-num {
+  .hero-map-demo {
     display: none;
-  }
-
-  .hero-map-demo-call {
-    opacity: 0;
-  }
-
-  .hero-map-demo-success {
-    opacity: 1;
-    transform: none;
-  }
-
-  .hero-map-demo-check-circle,
-  .hero-map-demo-check-mark {
-    stroke-dashoffset: 0;
   }
 }
 
