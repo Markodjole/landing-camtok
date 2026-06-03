@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ContactForm, NavBar, WaitlistForm } from "@/components/landing-client";
 import { HeroMapBackground } from "@/components/HeroMapBackground";
+import { HeroMapPredictionDemo } from "@/components/HeroMapPredictionDemo";
 import { HeroVideoBackground } from "@/components/HeroVideoBackground";
 
 export default function HomePage() {
@@ -28,6 +29,7 @@ export default function HomePage() {
                 </div>
                 <div className="hero-bottom-panel">
                   <HeroMapBackground />
+                  <HeroMapPredictionDemo />
                   <div className="hero-bottom-content">
                     <h1 className="hero-title-bottom">
                       <span>Call the next move.</span>
