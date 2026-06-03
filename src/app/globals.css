@@ -889,6 +889,23 @@ footer {
 
 /* ── Mobile & touch ── */
 @media (max-width: 899px) {
+  .nav {
+    background: #050505;
+    border-bottom-color: var(--border);
+    backdrop-filter: none;
+  }
+
+  .nav.scrolled {
+    background: #050505;
+    backdrop-filter: none;
+  }
+
+  .nav .logo-mark img {
+    height: 3rem;
+    opacity: 0.88;
+    filter: brightness(0.92);
+  }
+
   .hero {
     min-height: auto;
     align-items: flex-start;
@@ -992,7 +1009,8 @@ footer {
   }
 
   .nav .logo-mark img {
-    height: 2.85rem;
+    height: 2.5rem;
+    opacity: 0.85;
   }
 
   .nav-actions {
