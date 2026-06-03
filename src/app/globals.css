@@ -328,21 +328,21 @@ button {
   object-fit: cover;
   object-position: center center;
   opacity: 1;
-  filter: saturate(0.92) brightness(0.78) contrast(1.02);
+  filter: saturate(0.85) brightness(0.62) contrast(0.98);
   pointer-events: none;
   -webkit-mask-image: radial-gradient(
-    ellipse 78% 88% at 50% 50%,
-    rgba(0, 0, 0, 0.52) 0%,
-    rgba(0, 0, 0, 0.48) 38%,
-    rgba(0, 0, 0, 0.24) 68%,
-    rgba(0, 0, 0, 0.06) 100%
+    ellipse 52% 82% at 50% 50%,
+    rgba(0, 0, 0, 0.34) 0%,
+    rgba(0, 0, 0, 0.28) 24%,
+    rgba(0, 0, 0, 0.1) 52%,
+    rgba(0, 0, 0, 0.02) 100%
   );
   mask-image: radial-gradient(
-    ellipse 78% 88% at 50% 50%,
-    rgba(0, 0, 0, 0.52) 0%,
-    rgba(0, 0, 0, 0.48) 38%,
-    rgba(0, 0, 0, 0.24) 68%,
-    rgba(0, 0, 0, 0.06) 100%
+    ellipse 52% 82% at 50% 50%,
+    rgba(0, 0, 0, 0.34) 0%,
+    rgba(0, 0, 0, 0.28) 24%,
+    rgba(0, 0, 0, 0.1) 52%,
+    rgba(0, 0, 0, 0.02) 100%
   );
 }
 
@@ -351,12 +351,22 @@ button {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(
-    180deg,
-    rgba(5, 5, 5, 0.48) 0%,
-    rgba(5, 5, 5, 0.1) 30%,
-    rgba(5, 5, 5, 0.22) 100%
-  );
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 5, 5, 0.78) 0%,
+      rgba(5, 5, 5, 0.28) 18%,
+      rgba(5, 5, 5, 0.08) 42%,
+      rgba(5, 5, 5, 0.08) 58%,
+      rgba(5, 5, 5, 0.28) 82%,
+      rgba(5, 5, 5, 0.78) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 5, 5, 0.55) 0%,
+      rgba(5, 5, 5, 0.12) 32%,
+      rgba(5, 5, 5, 0.32) 100%
+    );
   pointer-events: none;
 }
 
@@ -952,18 +962,18 @@ footer {
 
   .hero-map-media {
     -webkit-mask-image: radial-gradient(
-      ellipse 92% 92% at 50% 50%,
-      rgba(0, 0, 0, 0.52) 0%,
-      rgba(0, 0, 0, 0.48) 42%,
-      rgba(0, 0, 0, 0.22) 78%,
-      rgba(0, 0, 0, 0.08) 100%
+      ellipse 68% 88% at 50% 50%,
+      rgba(0, 0, 0, 0.32) 0%,
+      rgba(0, 0, 0, 0.26) 30%,
+      rgba(0, 0, 0, 0.08) 62%,
+      rgba(0, 0, 0, 0.02) 100%
     );
     mask-image: radial-gradient(
-      ellipse 92% 92% at 50% 50%,
-      rgba(0, 0, 0, 0.52) 0%,
-      rgba(0, 0, 0, 0.48) 42%,
-      rgba(0, 0, 0, 0.22) 78%,
-      rgba(0, 0, 0, 0.08) 100%
+      ellipse 68% 88% at 50% 50%,
+      rgba(0, 0, 0, 0.32) 0%,
+      rgba(0, 0, 0, 0.26) 30%,
+      rgba(0, 0, 0, 0.08) 62%,
+      rgba(0, 0, 0, 0.02) 100%
     );
   }
 }

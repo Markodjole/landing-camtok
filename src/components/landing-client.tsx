@@ -71,7 +71,7 @@ export function WaitlistForm() {
   if (status === "success") {
     return (
       <p className="cta-note cta-success">
-        You&apos;re on the list — we&apos;ll email you when Crosstown opens.
+        You&apos;re on the list. We&apos;ll email you when Crosstown opens.
       </p>
     );
   }
@@ -96,7 +96,7 @@ export function WaitlistForm() {
         <textarea
           name="message"
           className="cta-email-message"
-          placeholder="Optional — city, how you'd use Crosstown, etc."
+          placeholder="Optional: city, how you'd use Crosstown, etc."
           rows={3}
           maxLength={500}
           disabled={status === "loading"}
@@ -143,7 +143,7 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <p className="cta-note cta-success">
-        Message sent — we&apos;ll get back to you soon.
+        Message sent. We&apos;ll get back to you soon.
       </p>
     );
   }

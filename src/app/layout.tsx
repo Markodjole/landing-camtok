@@ -11,12 +11,12 @@ const exo2 = Exo_2({
 });
 
 export const metadata: Metadata = {
-  title: "Crosstown — Watch the drive. Call the next move.",
+  title: "Crosstown | Watch the drive. Call the next move.",
   description:
-    "Live POV prediction game. Watch real city drives, call the next turn, zone, and route — before the driver decides.",
+    "Live POV prediction game. Watch real city drives, call the next turn, zone, and route before the driver decides.",
   metadataBase: new URL("https://playcrosstown.com"),
   openGraph: {
-    title: "Crosstown — Watch the drive. Call the next move.",
+    title: "Crosstown | Watch the drive. Call the next move.",
     description:
       "Live POV prediction game. Call turns, zones, and routes in real time.",
     url: "https://playcrosstown.com",

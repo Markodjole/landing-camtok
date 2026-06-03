@@ -44,7 +44,7 @@ async function postToFormSubmit(
       return {
         ok: false,
         error:
-          "Form is almost ready — the owner needs to confirm one email from FormSubmit, then try again.",
+          "Form is almost ready. The owner needs to confirm one email from FormSubmit, then try again.",
       };
     }
 

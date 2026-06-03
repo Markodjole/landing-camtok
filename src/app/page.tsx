@@ -36,7 +36,7 @@ export default function HomePage() {
                 </div>
               </div>
               <p className="hero-lead">
-                Crosstown is live POV prediction gaming — real drivers, real
+                Crosstown is live POV prediction gaming. Real drivers, real
                 streets, real-time GPS. Watch the stream, read the map, and call
                 the next turn, zone, or route before it happens.
               </p>
@@ -69,7 +69,7 @@ export default function HomePage() {
             <p className="section-label">How it works</p>
             <h2 className="section-title">Three steps. Zero scripts.</h2>
             <p className="section-lead">
-              Every round is tied to live GPS and a shared room timeline — so
+              Every round is tied to live GPS and a shared room timeline, so
               calls lock before the outcome, and everyone sees the same truth.
             </p>
 
@@ -108,7 +108,7 @@ export default function HomePage() {
             <p className="section-label">What you predict</p>
             <h2 className="section-title">Calls built for the road</h2>
             <p className="section-lead">
-              Not random clips — live route-state prompts generated from GPS,
+              Not random clips. Live route-state prompts generated from GPS,
               grid zones, and upcoming decisions on the map.
             </p>
 
@@ -129,7 +129,7 @@ export default function HomePage() {
                 </div>
                 <h3>Next zone</h3>
                 <p>
-                  Which city grid cell do they enter next — before they cross
+                  Which city grid cell do they enter next, before they cross
                   the border?
                 </p>
               </article>
@@ -149,7 +149,7 @@ export default function HomePage() {
                 </div>
                 <h3>Next step</h3>
                 <p>
-                  Predict the next maneuver on the route — a marker drops on the
+                  Predict the next maneuver on the route. A marker drops on the
                   map when the round opens.
                 </p>
               </article>
@@ -163,7 +163,7 @@ export default function HomePage() {
               <div className="feature">
                 <h3>Live WebRTC stream</h3>
                 <p>
-                  Real POV feed from the driver&apos;s phone — not pre-recorded
+                  Real POV feed from the driver&apos;s phone, not pre-recorded
                   video.
                 </p>
               </div>
@@ -177,7 +177,7 @@ export default function HomePage() {
               <div className="feature">
                 <h3>Map + video overlay</h3>
                 <p>
-                  See pins and zone signs inside the stream — the city becomes
+                  See pins and zone signs inside the stream. The city becomes
                   the game board.
                 </p>
               </div>
@@ -204,7 +204,7 @@ export default function HomePage() {
             <p className="section-label">Who it&apos;s for</p>
             <h2 className="section-title">Watch, drive, or partner</h2>
             <p className="section-lead">
-              Crosstown is a live room around a real drive — not a highlight reel.
+              Crosstown is a live room around a real drive, not a highlight reel.
               Pick the lane that fits you.
             </p>
             <div className="for-you-grid">
@@ -227,7 +227,7 @@ export default function HomePage() {
                 <h3>Partners &amp; press</h3>
                 <p>
                   Building something in mobility, media, or live entertainment?
-                  We&apos;d love to hear from you — reach out below.
+                  We&apos;d love to hear from you. Reach out below.
                 </p>
               </article>
             </div>
@@ -239,7 +239,7 @@ export default function HomePage() {
             <div className="cta-box">
               <h2>Contact</h2>
               <p>
-                Questions, partnerships, or press — send a message and we&apos;ll
+                Questions, partnerships, or press? Send a message and we&apos;ll
                 reply by email.
               </p>
               <ContactForm />
