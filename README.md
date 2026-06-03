@@ -13,17 +13,17 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Waitlist emails (free — no API key)
 
-1. Create `.env.local`:
+Signups go to FormSubmit and forward to your inbox. The deployed site works out of the box; override the inbox with an env var if you want a different address.
+
+Optional `.env.local`:
 
 ```bash
 WAITLIST_TO_EMAIL=your@gmail.com
 ```
 
-2. Restart dev server (`pnpm dev`)
-3. Submit the form **once** — FormSubmit sends a one-time activation link to that inbox; click it
-4. After that, every signup emails you automatically
+After changing the inbox, submit the form **once** — FormSubmit sends a one-time activation link to that address; click it. After that, every signup emails you automatically.
 
-On Vercel: add `WAITLIST_TO_EMAIL` under **Settings → Environment Variables** (Production).
+On Vercel: add `WAITLIST_TO_EMAIL` under **Settings → Environment Variables** (Production), then redeploy.
 
 Uses [FormSubmit](https://formsubmit.co) — free, works with Gmail, no account signup.
 

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getWaitlistInbox } from "@/lib/waitlist-inbox";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -24,14 +25,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const inbox = process.env.WAITLIST_TO_EMAIL;
-    if (!inbox) {
-      console.error("WAITLIST_TO_EMAIL is not set");
-      return NextResponse.json(
-        { error: "Waitlist is not configured yet. Please try again later." },
-        { status: 503 },
-      );
-    }
+    const inbox = getWaitlistInbox();
 
     const res = await fetch(
       `https://formsubmit.co/ajax/${encodeURIComponent(inbox)}`,
