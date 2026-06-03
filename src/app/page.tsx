@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ContactForm, NavBar, WaitlistForm } from "@/components/landing-client";
+import { HeroMapBackground } from "@/components/HeroMapBackground";
 
 export default function HomePage() {
   return (
@@ -13,7 +14,9 @@ export default function HomePage() {
           <div className="hero-grid" aria-hidden />
 
           <div className="container hero-content">
-            <div>
+            <div className="hero-copy">
+              <HeroMapBackground />
+              <div className="hero-copy-inner">
               <div className="hero-badge">
                 <span className="hero-badge-dot" aria-hidden />
                 Live city prediction game
@@ -35,6 +38,7 @@ export default function HomePage() {
                 <a href="#how-it-works" className="btn-secondary">
                   How it works
                 </a>
+              </div>
               </div>
             </div>
 
