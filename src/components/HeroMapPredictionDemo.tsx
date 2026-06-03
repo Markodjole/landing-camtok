@@ -5,7 +5,7 @@ import { useEffect, useState, type RefObject } from "react";
 const LOOP_SEC = 12;
 const ANIM_START_SEC = 6;
 
-type DemoPhase = "idle" | "countdown" | "press" | "success";
+type DemoPhase = "idle" | "countdown" | "call" | "loading" | "success";
 type CountNum = 3 | 2 | 1;
 
 type HeroMapPredictionDemoProps = {
@@ -16,77 +16,87 @@ function phaseFromTime(loopT: number): {
   visible: boolean;
   phase: DemoPhase;
   count: CountNum | null;
-  pressed: boolean;
+  callLit: boolean;
+  loading: boolean;
   showOk: boolean;
-  ringProgress: number;
 } {
   if (loopT < ANIM_START_SEC) {
     return {
       visible: false,
       phase: "idle",
       count: null,
-      pressed: false,
+      callLit: false,
+      loading: false,
       showOk: false,
-      ringProgress: 0,
     };
   }
 
   const p = loopT - ANIM_START_SEC;
-  const animLen = LOOP_SEC - ANIM_START_SEC;
+  const animEnd = LOOP_SEC - ANIM_START_SEC - 0.06;
 
-  if (p < 1.85) {
-    const count: CountNum = p < 0.62 ? 3 : p < 1.24 ? 2 : 1;
+  if (p >= animEnd) {
+    return {
+      visible: false,
+      phase: "idle",
+      count: null,
+      callLit: false,
+      loading: false,
+      showOk: false,
+    };
+  }
+
+  if (p < 3) {
+    const count = (3 - Math.min(2, Math.floor(p))) as CountNum;
     return {
       visible: true,
       phase: "countdown",
       count,
-      pressed: false,
+      callLit: false,
+      loading: false,
       showOk: false,
-      ringProgress: Math.min(1, p / 1.85),
     };
   }
 
-  if (p < 3.35) {
-    const pressT = p - 1.85;
+  if (p < 5.4) {
     return {
       visible: true,
-      phase: "press",
+      phase: "call",
       count: null,
-      pressed: pressT > 0.35,
+      callLit: p >= 4.15,
+      loading: false,
       showOk: false,
-      ringProgress: 1,
     };
   }
 
-  if (p < animLen - 0.08) {
+  if (p < 6.35) {
     return {
       visible: true,
-      phase: "success",
+      phase: "loading",
       count: null,
-      pressed: false,
-      showOk: true,
-      ringProgress: 1,
+      callLit: false,
+      loading: true,
+      showOk: false,
     };
   }
 
   return {
-    visible: false,
-    phase: "idle",
+    visible: true,
+    phase: "success",
     count: null,
-    pressed: false,
-    showOk: false,
-    ringProgress: 0,
+    callLit: false,
+    loading: false,
+    showOk: true,
   };
 }
 
-/** Prediction demo synced once per map video loop. Decorative only. */
+/** Subtle map hint synced once per video loop. Decorative only. */
 export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) {
   const [visible, setVisible] = useState(false);
   const [phase, setPhase] = useState<DemoPhase>("idle");
   const [count, setCount] = useState<CountNum | null>(null);
-  const [pressed, setPressed] = useState(false);
+  const [callLit, setCallLit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showOk, setShowOk] = useState(false);
-  const [ringProgress, setRingProgress] = useState(0);
 
   useEffect(() => {
     let raf = 0;
@@ -97,9 +107,9 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
       setVisible(next.visible);
       setPhase(next.phase);
       setCount(next.count);
-      setPressed(next.pressed);
+      setCallLit(next.callLit);
+      setLoading(next.loading);
       setShowOk(next.showOk);
-      setRingProgress(next.ringProgress);
     };
 
     const tick = () => {
@@ -124,78 +134,49 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
     return () => cancelAnimationFrame(raf);
   }, [videoRef]);
 
-  const ringOffset = 213.6 * (1 - ringProgress);
-
   return (
     <div
       className={`hero-map-demo${visible ? " is-visible" : ""}`}
       data-phase={phase}
       aria-hidden
     >
-      <div className="hero-map-demo-card">
-        <div
-          className={`hero-map-demo-ring${phase === "countdown" ? " is-on" : ""}`}
-          aria-hidden
-        >
-          <svg viewBox="0 0 80 80" className="hero-map-demo-ring-svg">
-            <circle className="hero-map-demo-ring-track" cx="40" cy="40" r="34" />
-            <circle
-              className="hero-map-demo-ring-progress"
-              cx="40"
-              cy="40"
-              r="34"
-              style={{ strokeDashoffset: ringOffset }}
-            />
-          </svg>
-        </div>
-
-        <div className="hero-map-demo-countdown">
-          {([3, 2, 1] as const).map((n) => (
-            <span
-              key={n}
-              className={`hero-map-demo-num${count === n ? " is-lit" : ""}`}
-            >
-              {n}
-            </span>
-          ))}
-        </div>
-
-        <div className={`hero-map-demo-call${phase === "press" ? " is-on" : ""}`}>
-          <div className="hero-map-demo-press">
-            <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
-              Right
-            </span>
-            <span
-              className={`hero-map-demo-ripple${pressed ? " is-on" : ""}`}
-              aria-hidden
-            />
-          </div>
-        </div>
-
-        <div
-          className={`hero-map-demo-success${phase === "success" && showOk ? " is-on" : ""}`}
-        >
-          <div className="hero-map-demo-check-wrap">
-            <svg viewBox="0 0 52 52" className="hero-map-demo-check-svg" aria-hidden>
-              <circle
-                className={`hero-map-demo-check-circle${showOk ? " is-on" : ""}`}
-                cx="26"
-                cy="26"
-                r="23"
-              />
-              <path
-                className={`hero-map-demo-check-mark${showOk ? " is-on" : ""}`}
-                d="M15 27l7 7 15-16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        </div>
+      <div className="hero-map-demo-countdown">
+        {([3, 2, 1] as const).map((n) => (
+          <span
+            key={n}
+            className={`hero-map-demo-num${count === n ? " is-lit" : ""}`}
+          >
+            {n}
+          </span>
+        ))}
       </div>
+
+      <p className={`hero-map-demo-call${phase === "call" ? " is-on" : ""}`}>
+        <span className={`hero-map-demo-call-text${callLit ? " is-lit" : ""}`}>
+          Turn left
+        </span>
+      </p>
+
+      <div className={`hero-map-demo-loading${loading ? " is-on" : ""}`} aria-hidden>
+        <span className="hero-map-demo-spinner" />
+      </div>
+
+      <svg
+        viewBox="0 0 32 32"
+        className={`hero-map-demo-ok${showOk ? " is-on" : ""}`}
+        aria-hidden
+      >
+        <circle className="hero-map-demo-ok-ring" cx="16" cy="16" r="13" />
+        <path
+          className="hero-map-demo-ok-mark"
+          d="M9 16l4.5 4.5L23 10"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
     </div>
   );
 }
