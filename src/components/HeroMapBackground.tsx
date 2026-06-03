@@ -1,288 +1,328 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { decodeGooglePolyline } from "@/lib/decodeGooglePolyline";
-import { loadGoogleMaps } from "@/lib/loadGoogleMaps";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  HERO_DESTINATION,
+  HERO_ORIGIN,
+  HERO_PIN_STOPS,
+  type LatLng,
+} from "@/lib/heroRoute";
 import { pointAtRouteProgress } from "@/lib/routeProgress";
 
 const ROUTE_DURATION_MS = 60_000;
+const ZOOM = 15;
+const TILE_PX = 256;
+const SUBDOMAINS = ["a", "b", "c", "d"] as const;
 const PURPLE = "#6c23ed";
 const GREEN = "#6dff00";
 
-/** SoHo → Bryant Park — real Manhattan bike ride (~2.4 mi). */
-const ORIGIN = { lat: 40.7234, lng: -74.003 };
-const DESTINATION = { lat: 40.7536, lng: -73.9832 };
-
-const PIN_STOPS: Array<{ progress: number; kind: "bet" | "turn" | "zone" }> = [
-  { progress: 0.22, kind: "turn" },
-  { progress: 0.48, kind: "zone" },
-  { progress: 0.72, kind: "bet" },
-];
-
-function latLngLiteral(p: google.maps.LatLng | google.maps.LatLngLiteral) {
-  if (typeof (p as google.maps.LatLng).lat === "function") {
-    const ll = p as google.maps.LatLng;
-    return { lat: ll.lat(), lng: ll.lng() };
-  }
-  const ll = p as google.maps.LatLngLiteral;
-  return { lat: ll.lat, lng: ll.lng };
+function lngToTileX(lng: number, zoom: number) {
+  return Math.floor(((lng + 180) / 360) * 2 ** zoom);
 }
 
-const MAP_STYLES: google.maps.MapTypeStyle[] = [
-  { elementType: "geometry", stylers: [{ color: "#1a1a1f" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#8a8a96" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#0d0d0f" }] },
-  {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [{ color: "#2c2c34" }],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry.stroke",
-    stylers: [{ color: "#3a3a44" }],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry",
-    stylers: [{ color: "#3d3d48" }],
-  },
-  {
-    featureType: "water",
-    elementType: "geometry",
-    stylers: [{ color: "#0e1624" }],
-  },
-  {
-    featureType: "poi",
-    elementType: "geometry",
-    stylers: [{ color: "#222228" }],
-  },
-  {
-    featureType: "transit",
-    elementType: "geometry",
-    stylers: [{ color: "#252530" }],
-  },
-];
+function latToTileY(lat: number, zoom: number) {
+  const rad = (lat * Math.PI) / 180;
+  return Math.floor(
+    ((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2) * 2 ** zoom,
+  );
+}
 
-function pinIcon(color: string) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
-    <path fill="${color}" stroke="rgba(0,0,0,0.35)" stroke-width="1"
-      d="M14 0C6.3 0 0 6.3 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.3 21.7 0 14 0z"/>
-    <circle cx="14" cy="14" r="5" fill="rgba(255,255,255,0.9)"/>
-  </svg>`;
+function tileUrl(x: number, y: number, z: number, i: number) {
+  const sub = SUBDOMAINS[i % SUBDOMAINS.length]!;
+  return `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
+}
+
+function latLngToPixel(
+  lat: number,
+  lng: number,
+  originTileX: number,
+  originTileY: number,
+  zoom: number,
+) {
+  const scale = TILE_PX * 2 ** zoom;
+  const worldX = ((lng + 180) / 360) * scale;
+  const sinLat = Math.sin((lat * Math.PI) / 180);
+  const worldY =
+    (0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * scale;
   return {
-    url: `data:image/svg+xml,${encodeURIComponent(svg)}`,
-    scaledSize: new google.maps.Size(28, 36),
-    anchor: new google.maps.Point(14, 36),
+    x: worldX - originTileX * TILE_PX,
+    y: worldY - originTileY * TILE_PX,
   };
 }
 
-function riderIcon(heading: number) {
-  return {
-    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-    scale: 6,
-    fillColor: GREEN,
-    fillOpacity: 1,
-    strokeColor: "#0a0a0a",
-    strokeWeight: 1.5,
-    rotation: heading,
-  };
+function centerOf(path: LatLng[]) {
+  const lat = path.reduce((s, p) => s + p.lat, 0) / path.length;
+  const lng = path.reduce((s, p) => s + p.lng, 0) / path.length;
+  return { lat, lng };
 }
 
-/** Real Google Maps route ride through Manhattan — ~1 min loop. */
+/** Manhattan route map — tiles + 1 min animated ride (no client Google key). */
 export function HeroMapBackground() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const riderRef = useRef<google.maps.Marker | null>(null);
-  const routeAheadRef = useRef<google.maps.Polyline | null>(null);
-  const routeDoneRef = useRef<google.maps.Polyline | null>(null);
-  const pinRefs = useRef<google.maps.Marker[]>([]);
-  const pathRef = useRef<Array<{ lat: number; lng: number }>>([]);
-  const startRef = useRef<number>(0);
-  const rafRef = useRef<number>(0);
-  const [ready, setReady] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pathRef = useRef<LatLng[]>([]);
+  const startRef = useRef(0);
+  const [routeCenter, setRouteCenter] = useState(centerOf([HERO_ORIGIN, HERO_DESTINATION]));
+  const [size, setSize] = useState({ w: 400, h: 280 });
+  const [routeReady, setRouteReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
+  const centerTileX = lngToTileX(routeCenter.lng, ZOOM);
+  const centerTileY = latToTileY(routeCenter.lat, ZOOM);
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
-    if (!apiKey) {
-      setError("Map unavailable");
-      return;
+  const tiles = useMemo(() => {
+    const cols = Math.ceil(size.w / TILE_PX) + 3;
+    const rows = Math.ceil(size.h / TILE_PX) + 3;
+    const startX = centerTileX - Math.floor(cols / 2);
+    const startY = centerTileY - Math.floor(rows / 2);
+    const list: Array<{ x: number; y: number; left: number; top: number; key: string }> =
+      [];
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const tx = startX + col;
+        const ty = startY + row;
+        list.push({
+          x: tx,
+          y: ty,
+          left: col * TILE_PX,
+          top: row * TILE_PX,
+          key: `${tx}-${ty}`,
+        });
+      }
     }
+    return { list, originX: startX, originY: startY, cols, rows };
+  }, [size.w, size.h, centerTileX, centerTileY]);
 
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const ro = new ResizeObserver(() => {
+      setSize({ w: wrap.clientWidth, h: wrap.clientHeight });
+    });
+    ro.observe(wrap);
+    setSize({ w: wrap.clientWidth, h: wrap.clientHeight });
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
 
     (async () => {
       try {
-        const g = await loadGoogleMaps(apiKey);
+        const res = await fetch("/api/hero-route");
+        if (!res.ok) throw new Error("Route fetch failed");
+        const data = (await res.json()) as { path?: LatLng[] };
+        if (!data.path?.length) throw new Error("Empty route");
         if (cancelled) return;
-
-        const map = new g.maps.Map(el, {
-          center: ORIGIN,
-          zoom: 14,
-          disableDefaultUI: true,
-          gestureHandling: "none",
-          keyboardShortcuts: false,
-          clickableIcons: false,
-          styles: MAP_STYLES,
-          backgroundColor: "#0d0d0f",
-        });
-        mapRef.current = map;
-
-        const directions = new g.maps.DirectionsService();
-        const requestRoute = (mode: google.maps.TravelMode) =>
-          new Promise<google.maps.DirectionsResult>((resolve, reject) => {
-            directions.route(
-              {
-                origin: ORIGIN,
-                destination: DESTINATION,
-                travelMode: mode,
-                provideRouteAlternatives: false,
-              },
-              (res, status) => {
-                if (status === g.maps.DirectionsStatus.OK && res) resolve(res);
-                else reject(new Error(`Directions failed: ${status}`));
-              },
-            );
-          });
-
-        let result: google.maps.DirectionsResult;
-        try {
-          result = await requestRoute(g.maps.TravelMode.BICYCLING);
-        } catch {
-          result = await requestRoute(g.maps.TravelMode.DRIVING);
-        }
-
-        if (cancelled) return;
-
-        const route = result.routes[0];
-        if (!route) throw new Error("No route returned");
-
-        let path: Array<{ lat: number; lng: number }> = [];
-        const poly = route.overview_polyline as
-          | string
-          | { points?: string }
-          | undefined;
-        const encoded =
-          typeof poly === "string" ? poly : poly?.points;
-        if (encoded) {
-          path = decodeGooglePolyline(encoded);
-        } else if (route.overview_path?.length) {
-          path = route.overview_path.map(latLngLiteral);
-        } else {
-          for (const leg of route.legs ?? []) {
-            for (const step of leg.steps ?? []) {
-              step.path?.forEach((p) => path.push(latLngLiteral(p)));
-            }
-          }
-        }
-
-        if (path.length < 2) {
-          throw new Error("Empty route");
-        }
-
-        pathRef.current = path;
-
-        const bounds = new g.maps.LatLngBounds();
-        path.forEach((p) => bounds.extend(p));
-        map.fitBounds(bounds, { top: 48, right: 48, bottom: 48, left: 48 });
-
-        routeAheadRef.current = new g.maps.Polyline({
-          map,
-          path,
-          strokeColor: PURPLE,
-          strokeOpacity: 0.35,
-          strokeWeight: 5,
-          zIndex: 1,
-        });
-
-        routeDoneRef.current = new g.maps.Polyline({
-          map,
-          path: [path[0]!],
-          strokeColor: PURPLE,
-          strokeOpacity: 0.95,
-          strokeWeight: 6,
-          zIndex: 2,
-        });
-
-        const dest = path[path.length - 1]!;
-        new g.maps.Marker({
-          map,
-          position: dest,
-          icon: pinIcon(PURPLE),
-          zIndex: 4,
-        });
-
-        pinRefs.current = PIN_STOPS.map(({ progress, kind }) => {
-          const p = pointAtRouteProgress(path, progress);
-          const color =
-            kind === "zone" ? PURPLE : kind === "turn" ? "#ffffff" : GREEN;
-          return new g.maps.Marker({
-            map,
-            position: { lat: p.lat, lng: p.lng },
-            icon: pinIcon(color),
-            zIndex: 3,
-          });
-        });
-
-        const startPos = pointAtRouteProgress(path, 0);
-        riderRef.current = new g.maps.Marker({
-          map,
-          position: { lat: startPos.lat, lng: startPos.lng },
-          icon: riderIcon(startPos.heading),
-          zIndex: 5,
-        });
-
-        startRef.current = performance.now();
-        setReady(true);
-
-        const tick = (now: number) => {
-          if (cancelled || !mapRef.current || pathRef.current.length < 2) return;
-
-          const elapsed = (now - startRef.current) % ROUTE_DURATION_MS;
-          const progress = elapsed / ROUTE_DURATION_MS;
-          const pos = pointAtRouteProgress(pathRef.current, progress);
-
-          riderRef.current?.setPosition({ lat: pos.lat, lng: pos.lng });
-          riderRef.current?.setIcon(riderIcon(pos.heading));
-
-          const doneCount = Math.max(
-            2,
-            Math.floor(progress * (pathRef.current.length - 1)) + 1,
-          );
-          routeDoneRef.current?.setPath(pathRef.current.slice(0, doneCount));
-
-          map.panTo({ lat: pos.lat, lng: pos.lng });
-
-          rafRef.current = requestAnimationFrame(tick);
-        };
-
-        rafRef.current = requestAnimationFrame(tick);
-      } catch (e) {
-        if (!cancelled) {
-          setError(e instanceof Error ? e.message : "Map failed to load");
-        }
+        pathRef.current = data.path;
+        setRouteCenter(centerOf(data.path));
+        setRouteReady(true);
+      } catch {
+        if (!cancelled) setError("Map failed to load");
       }
     })();
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(rafRef.current);
-      routeAheadRef.current?.setMap(null);
-      routeDoneRef.current?.setMap(null);
-      riderRef.current?.setMap(null);
-      pinRefs.current.forEach((m) => m.setMap(null));
-      pinRefs.current = [];
-      mapRef.current = null;
     };
   }, []);
 
+  useEffect(() => {
+    if (!routeReady) return;
+
+    const track = trackRef.current;
+    if (!track) return;
+    let px = 0;
+    let py = 0;
+    let raf = 0;
+    const tick = () => {
+      px += 0.24;
+      py += 0.14;
+      track.style.transform = `translate(${-(px % TILE_PX)}px, ${-(py % TILE_PX)}px)`;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [routeReady]);
+
+  useEffect(() => {
+    if (!routeReady) return;
+
+    const wrap = wrapRef.current;
+    const canvas = canvasRef.current;
+    if (!wrap || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf = 0;
+    const originX = tiles.originX;
+    const originY = tiles.originY;
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const project = (lat: number, lng: number, panX: number, panY: number) => {
+      const p = latLngToPixel(lat, lng, originX, originY, ZOOM);
+      return { x: p.x + panX, y: p.y + panY };
+    };
+
+    const drawPin = (
+      x: number,
+      y: number,
+      kind: "bet" | "turn" | "zone",
+      t: number,
+      i: number,
+    ) => {
+      const bob = Math.sin(t * 1.8 + i) * 2.5;
+      const headY = y + bob - 11;
+      const fill =
+        kind === "zone" ? PURPLE : kind === "turn" ? "#ffffff" : GREEN;
+      const r = kind === "bet" ? 8 : 7;
+
+      ctx.save();
+      ctx.shadowColor = fill;
+      ctx.shadowBlur = 14;
+      ctx.beginPath();
+      ctx.arc(x, headY, r, Math.PI, 0);
+      ctx.lineTo(x, y + bob + 5);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawArrow = (x: number, y: number, angle: number) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.shadowColor = GREEN;
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = GREEN;
+      ctx.beginPath();
+      ctx.moveTo(10, 0);
+      ctx.lineTo(-7, 6);
+      ctx.lineTo(-4, 0);
+      ctx.lineTo(-7, -6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    };
+
+    startRef.current = performance.now();
+
+    const draw = (now: number) => {
+      const path = pathRef.current;
+      if (path.length < 2) return;
+
+      const elapsed = (now - startRef.current) % ROUTE_DURATION_MS;
+      const progress = elapsed / ROUTE_DURATION_MS;
+      const t = now / 1000;
+      const panX = -((t * 12) % TILE_PX);
+      const panY = -((t * 7) % TILE_PX);
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      const routePx = path.map((p) => project(p.lat, p.lng, panX, panY));
+
+      ctx.save();
+      ctx.strokeStyle = PURPLE;
+      ctx.lineWidth = 4;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.globalAlpha = 0.4;
+      ctx.beginPath();
+      ctx.moveTo(routePx[0]!.x, routePx[0]!.y);
+      for (let i = 1; i < routePx.length; i++) {
+        ctx.lineTo(routePx[i]!.x, routePx[i]!.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      const doneIdx = Math.max(2, Math.floor(progress * (routePx.length - 1)) + 1);
+      ctx.save();
+      ctx.strokeStyle = PURPLE;
+      ctx.lineWidth = 5;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(routePx[0]!.x, routePx[0]!.y);
+      for (let i = 1; i < doneIdx; i++) {
+        ctx.lineTo(routePx[i]!.x, routePx[i]!.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      const pos = pointAtRouteProgress(path, progress);
+      const rider = project(pos.lat, pos.lng, panX, panY);
+      drawArrow(rider.x, rider.y, (pos.heading * Math.PI) / 180);
+
+      const dest = routePx[routePx.length - 1]!;
+      drawPin(dest.x, dest.y, "zone", t, 99);
+
+      HERO_PIN_STOPS.forEach(({ progress: p, kind }, i) => {
+        const pin = pointAtRouteProgress(path, p);
+        const px = project(pin.lat, pin.lng, panX, panY);
+        if (px.x < -24 || px.x > w + 24 || px.y < -24 || px.y > h + 24) return;
+        drawPin(px.x, px.y, kind, t, i);
+      });
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    resize();
+    raf = requestAnimationFrame(draw);
+    const ro = new ResizeObserver(resize);
+    ro.observe(wrap);
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [routeReady, tiles.originX, tiles.originY]);
+
   return (
     <div ref={wrapRef} className="hero-map-bg" aria-hidden>
-      {!ready && !error && <div className="hero-map-loading">Loading route…</div>}
+      {routeReady && (
+        <>
+          <div
+            ref={trackRef}
+            className="hero-map-track"
+            style={{
+              width: tiles.cols * TILE_PX,
+              height: tiles.rows * TILE_PX,
+            }}
+          >
+            {tiles.list.map((tile, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={tile.key}
+                src={tileUrl(tile.x, tile.y, ZOOM, i)}
+                alt=""
+                width={TILE_PX}
+                height={TILE_PX}
+                loading="eager"
+                decoding="async"
+                draggable={false}
+                style={{ left: tile.left, top: tile.top }}
+                className="hero-map-tile"
+              />
+            ))}
+          </div>
+          <canvas ref={canvasRef} className="hero-map-overlay" />
+        </>
+      )}
+      {!routeReady && !error && (
+        <div className="hero-map-loading">Loading route…</div>
+      )}
       {error && <div className="hero-map-fallback">{error}</div>}
     </div>
   );
