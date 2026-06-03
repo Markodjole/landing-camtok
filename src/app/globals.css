@@ -307,16 +307,10 @@ button {
   background: #e8e4df;
 }
 
-.hero-map-track {
-  position: absolute;
-  will-change: transform;
-}
-
-.hero-map-tile {
-  position: absolute;
-  display: block;
-  width: 256px;
-  height: 256px;
+.hero-map-image {
+  object-fit: cover;
+  object-position: center center;
+  pointer-events: none;
 }
 
 .hero-map-overlay {
@@ -325,20 +319,6 @@ button {
   z-index: 1;
   width: 100%;
   height: 100%;
-  pointer-events: none;
-}
-
-.hero-map-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(
-    180deg,
-    rgba(5, 5, 5, 0.04) 0%,
-    rgba(5, 5, 5, 0.14) 55%,
-    rgba(5, 5, 5, 0.26) 100%
-  );
   pointer-events: none;
 }
 
