@@ -1,4 +1,4 @@
-/** Inbox for FormSubmit waitlist notifications. Override with NEXT_PUBLIC_WAITLIST_TO_EMAIL. */
+/** Inbox for FormSubmit waitlist notifications. Set WAITLIST_TO_EMAIL or NEXT_PUBLIC_WAITLIST_TO_EMAIL on Vercel. */
 export const WAITLIST_INBOX =
   process.env.NEXT_PUBLIC_WAITLIST_TO_EMAIL?.trim() ||
   "marko.djordjevickg@gmail.com";
