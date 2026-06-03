@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-/** Mixkit — following a bike through busy city streets (free license). */
+/** Freestock — first-person bicycle ride down a sunny California street. */
 const VIDEO_SRC = "/hero-bike-california.mp4";
 
 export function HeroVideoBackground() {
@@ -15,7 +15,7 @@ export function HeroVideoBackground() {
   }, []);
 
   return (
-    <div className="hero-video-bg" aria-hidden data-label="Live ride">
+    <div className="hero-video-bg" aria-hidden>
       <video
         ref={videoRef}
         className="hero-video-media"

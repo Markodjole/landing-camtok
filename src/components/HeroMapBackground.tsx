@@ -189,8 +189,8 @@ export function HeroMapBackground() {
 
       const routePx = ROUTE.map((p) => project(p.lat, p.lng, panX, panY));
       if (routePx.length >= 2) {
-        ctx.strokeStyle = `rgba(${PURPLE_RGB}, 0.95)`;
-        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = `rgba(${PURPLE_RGB}, 1)`;
+        ctx.lineWidth = 3;
         ctx.setLineDash([10, 8]);
         ctx.lineDashOffset = -t * 24;
         ctx.beginPath();
@@ -234,7 +234,7 @@ export function HeroMapBackground() {
   }, [tiles.originX, tiles.originY]);
 
   return (
-    <div ref={wrapRef} className="hero-map-bg" aria-hidden data-label="Live map">
+    <div ref={wrapRef} className="hero-map-bg" aria-hidden>
       <div
         ref={trackRef}
         className="hero-map-track"
