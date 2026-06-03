@@ -1,7 +1,5 @@
-import Image from "next/image";
 import { ContactForm, NavBar, WaitlistForm } from "@/components/landing-client";
-import { HeroMapBackground } from "@/components/HeroMapBackground";
-import { HeroMapPredictionDemo } from "@/components/HeroMapPredictionDemo";
+import { HeroBottomPanel } from "@/components/HeroBottomPanel";
 import { HeroVideoBackground } from "@/components/HeroVideoBackground";
 
 export default function HomePage() {
@@ -27,15 +25,9 @@ export default function HomePage() {
                   <HeroVideoBackground />
                   <h1 className="hero-title-top">Watch the drive.</h1>
                 </div>
-                <div className="hero-bottom-panel">
-                  <HeroMapBackground />
-                  <HeroMapPredictionDemo />
-                  <div className="hero-bottom-content">
-                    <h1 className="hero-title-bottom">
-                      <span>Call the next move.</span>
-                    </h1>
-                  </div>
-                </div>
+                <HeroBottomPanel
+                  title={<span>Call the next move.</span>}
+                />
               </div>
               <p className="hero-lead">
                 Crosstown is live POV prediction gaming. Real drivers, real
@@ -53,16 +45,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="hero-logo-wrap">
-              <div className="hero-logo-web" aria-hidden />
-              <Image
-                src="/crosstown-logo.png"
-                alt="Crosstown"
-                width={1024}
-                height={269}
-                priority
-                className="hero-logo"
-              />
+            <div className="hero-logo-wrap" aria-hidden>
+              <div className="hero-logo-web" />
             </div>
           </div>
         </section>

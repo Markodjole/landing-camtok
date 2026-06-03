@@ -1,70 +1,120 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState, type RefObject } from "react";
 
-const ANIM_START_SEC = 10;
-const ANIM_LEN_SEC = 2;
+const LOOP_SEC = 12;
+const ANIM_START_SEC = 6;
 
-/** Subtle map hint synced once per video loop. Decorative only. */
-export function HeroMapPredictionDemo() {
-  const rootRef = useRef<HTMLDivElement>(null);
+type DemoPhase = "idle" | "countdown" | "press" | "success";
+type CountNum = 3 | 2 | 1;
+
+type HeroMapPredictionDemoProps = {
+  videoRef: RefObject<HTMLVideoElement | null>;
+};
+
+function phaseFromTime(loopT: number): {
+  visible: boolean;
+  phase: DemoPhase;
+  count: CountNum | null;
+  pressed: boolean;
+  showOk: boolean;
+  ringProgress: number;
+} {
+  if (loopT < ANIM_START_SEC) {
+    return {
+      visible: false,
+      phase: "idle",
+      count: null,
+      pressed: false,
+      showOk: false,
+      ringProgress: 0,
+    };
+  }
+
+  const p = loopT - ANIM_START_SEC;
+  const animLen = LOOP_SEC - ANIM_START_SEC;
+
+  if (p < 1.85) {
+    const count: CountNum = p < 0.62 ? 3 : p < 1.24 ? 2 : 1;
+    return {
+      visible: true,
+      phase: "countdown",
+      count,
+      pressed: false,
+      showOk: false,
+      ringProgress: Math.min(1, p / 1.85),
+    };
+  }
+
+  if (p < 3.35) {
+    const pressT = p - 1.85;
+    return {
+      visible: true,
+      phase: "press",
+      count: null,
+      pressed: pressT > 0.35,
+      showOk: false,
+      ringProgress: 1,
+    };
+  }
+
+  if (p < animLen - 0.08) {
+    return {
+      visible: true,
+      phase: "success",
+      count: null,
+      pressed: false,
+      showOk: true,
+      ringProgress: 1,
+    };
+  }
+
+  return {
+    visible: false,
+    phase: "idle",
+    count: null,
+    pressed: false,
+    showOk: false,
+    ringProgress: 0,
+  };
+}
+
+/** Prediction demo synced once per map video loop. Decorative only. */
+export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) {
+  const [visible, setVisible] = useState(false);
+  const [phase, setPhase] = useState<DemoPhase>("idle");
+  const [count, setCount] = useState<CountNum | null>(null);
+  const [pressed, setPressed] = useState(false);
+  const [showOk, setShowOk] = useState(false);
+  const [ringProgress, setRingProgress] = useState(0);
 
   useEffect(() => {
-    const panel = rootRef.current?.closest(".hero-bottom-panel");
-    const video = panel?.querySelector("video");
-    if (!video) return;
-
     let raf = 0;
+    let fallbackStart = performance.now();
+
+    const apply = (loopT: number) => {
+      const next = phaseFromTime(loopT);
+      setVisible(next.visible);
+      setPhase(next.phase);
+      setCount(next.count);
+      setPressed(next.pressed);
+      setShowOk(next.showOk);
+      setRingProgress(next.ringProgress);
+    };
 
     const tick = () => {
-      const el = rootRef.current;
-      if (!el) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
+      const video = videoRef.current;
 
-      const dotEls = el.querySelectorAll<HTMLElement>(".hero-map-demo-dot");
-      const t = video.currentTime;
-      const inWindow =
-        t >= ANIM_START_SEC && t < ANIM_START_SEC + ANIM_LEN_SEC - 0.04;
-
-      if (!inWindow) {
-        el.style.opacity = "0";
-        el.dataset.step = "idle";
-        el.style.setProperty("--press", "0");
-        el.style.setProperty("--ok", "0");
-        dotEls.forEach((dot) => {
-          dot.style.transform = "scale(0.8)";
-          dot.style.background = "rgba(255, 255, 255, 0.12)";
-        });
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-
-      const p = (t - ANIM_START_SEC) / ANIM_LEN_SEC;
-      el.style.opacity = "0.22";
-
-      if (p < 0.55) {
-        el.dataset.step = "countdown";
-        el.style.setProperty("--press", "0");
-        el.style.setProperty("--ok", "0");
-        const active = Math.min(2, Math.floor(p / 0.18));
-        dotEls.forEach((dot, i) => {
-          const on = i === active;
-          dot.style.transform = on ? "scale(1.15)" : "scale(0.78)";
-          dot.style.background = on
-            ? "rgba(109, 255, 0, 0.38)"
-            : "rgba(255, 255, 255, 0.12)";
-        });
-      } else if (p < 0.78) {
-        el.dataset.step = "press";
-        el.style.setProperty("--ok", "0");
-        const press = Math.min(1, (p - 0.55) / 0.14);
-        el.style.setProperty("--press", String(press));
+      if (video && video.readyState >= 2 && !video.paused && video.currentTime > 0.05) {
+        const dur = video.duration;
+        const loop =
+          Number.isFinite(dur) && dur > 0
+            ? video.currentTime % dur
+            : video.currentTime % LOOP_SEC;
+        apply(loop);
       } else {
-        el.dataset.step = "success";
-        el.style.setProperty("--press", "0");
-        el.style.setProperty("--ok", String(Math.min(1, (p - 0.78) / 0.16)));
+        const elapsed = (performance.now() - fallbackStart) / 1000;
+        apply(elapsed % LOOP_SEC);
       }
 
       raf = requestAnimationFrame(tick);
@@ -72,37 +122,80 @@ export function HeroMapPredictionDemo() {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [videoRef]);
+
+  const ringOffset = 213.6 * (1 - ringProgress);
 
   return (
-    <div ref={rootRef} className="hero-map-demo" data-step="idle" aria-hidden>
-      <div className="hero-map-demo-dots">
-        <span className="hero-map-demo-dot" />
-        <span className="hero-map-demo-dot" />
-        <span className="hero-map-demo-dot" />
+    <div
+      className={`hero-map-demo${visible ? " is-visible" : ""}`}
+      data-phase={phase}
+      aria-hidden
+    >
+      <div className="hero-map-demo-card">
+        <div
+          className={`hero-map-demo-ring${phase === "countdown" ? " is-on" : ""}`}
+          aria-hidden
+        >
+          <svg viewBox="0 0 80 80" className="hero-map-demo-ring-svg">
+            <circle className="hero-map-demo-ring-track" cx="40" cy="40" r="34" />
+            <circle
+              className="hero-map-demo-ring-progress"
+              cx="40"
+              cy="40"
+              r="34"
+              style={{ strokeDashoffset: ringOffset }}
+            />
+          </svg>
+        </div>
+
+        <div className="hero-map-demo-countdown">
+          {([3, 2, 1] as const).map((n) => (
+            <span
+              key={n}
+              className={`hero-map-demo-num${count === n ? " is-lit" : ""}`}
+            >
+              {n}
+            </span>
+          ))}
+        </div>
+
+        <div className={`hero-map-demo-call${phase === "press" ? " is-on" : ""}`}>
+          <div className="hero-map-demo-press">
+            <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
+              Right
+            </span>
+            <span
+              className={`hero-map-demo-ripple${pressed ? " is-on" : ""}`}
+              aria-hidden
+            />
+          </div>
+        </div>
+
+        <div
+          className={`hero-map-demo-success${phase === "success" && showOk ? " is-on" : ""}`}
+        >
+          <div className="hero-map-demo-check-wrap">
+            <svg viewBox="0 0 52 52" className="hero-map-demo-check-svg" aria-hidden>
+              <circle
+                className={`hero-map-demo-check-circle${showOk ? " is-on" : ""}`}
+                cx="26"
+                cy="26"
+                r="23"
+              />
+              <path
+                className={`hero-map-demo-check-mark${showOk ? " is-on" : ""}`}
+                d="M15 27l7 7 15-16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
-      <div className="hero-map-demo-hit" aria-hidden>
-        <svg viewBox="0 0 24 24" className="hero-map-demo-chevron">
-          <path
-            d="M9 7l5 5-5 5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-      <svg viewBox="0 0 32 32" className="hero-map-demo-ok" aria-hidden>
-        <path
-          d="M9 16l4.5 4.5L23 10"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.25"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
     </div>
   );
 }
