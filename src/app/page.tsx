@@ -202,7 +202,7 @@ export default function HomePage() {
         <section id="for-you" className="for-you-section">
           <div className="container">
             <p className="section-label">Who it&apos;s for</p>
-            <h2 className="section-title">Watch, drive, or partner</h2>
+            <h2 className="section-title">Watch and predict, drive, or partner</h2>
             <p className="section-lead">
               Crosstown is a live room around a real drive, not a highlight reel.
               Pick the lane that fits you.
