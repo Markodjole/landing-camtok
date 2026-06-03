@@ -21,20 +21,18 @@ export default function HomePage() {
                 <span className="hero-badge-dot" aria-hidden />
                 Live city prediction game
               </div>
-              <div className="hero-headline-wrap">
-                <h1>
-                  <span className="hero-line">
-                    <HeroVideoBackground />
-                    <span className="hero-line-text">Watch the drive.</span>
-                  </span>
-                  <span className="hero-line">
-                    <HeroMapBackground />
-                    <span className="hero-line-text">
-                      <span>Call the next move.</span>
-                    </span>
-                  </span>
-                </h1>
+              <div className="hero-headline-top">
+                <div className="hero-line hero-line-video">
+                  <HeroVideoBackground />
+                  <h1 className="hero-title-top">Watch the drive.</h1>
+                </div>
               </div>
+              <div className="hero-bottom-panel">
+                <HeroMapBackground />
+                <div className="hero-bottom-content">
+                  <h1 className="hero-title-bottom">
+                    <span>Call the next move.</span>
+                  </h1>
               <p className="hero-lead">
                 Crosstown is live dashcam betting — real drivers, real streets,
                 real-time GPS. Watch the stream, read the map, and bet on the
@@ -47,6 +45,8 @@ export default function HomePage() {
                 <a href="#how-it-works" className="btn-secondary">
                   How it works
                 </a>
+              </div>
+                </div>
               </div>
               </div>
             </div>

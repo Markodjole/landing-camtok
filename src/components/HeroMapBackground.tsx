@@ -4,10 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 const ZOOM = 15;
 const TILE_PX = 256;
-const CENTER = { lat: 40.7589, lng: -73.9851 }; // Midtown — tight grid at small size
+const CENTER = { lat: 40.7589, lng: -73.9851 }; // Midtown Manhattan
 const SUBDOMAINS = ["a", "b", "c", "d"] as const;
-const PURPLE_RGB = "108, 35, 237";
-const GREEN_RGB = "109, 255, 0";
+const PURPLE = "#6c23ed";
+const GREEN = "#6dff00";
 
 function lngToTileX(lng: number, zoom: number) {
   return Math.floor(((lng + 180) / 360) * 2 ** zoom);
@@ -22,10 +22,9 @@ function latToTileY(lat: number, zoom: number) {
 
 function tileUrl(x: number, y: number, z: number, i: number) {
   const sub = SUBDOMAINS[i % SUBDOMAINS.length]!;
-  return `https://${sub}.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
+  return `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
 }
 
-/** Lat/lng → pixel offset inside the tile grid (top-left of grid = tile 0,0). */
 function latLngToPixel(
   lat: number,
   lng: number,
@@ -50,6 +49,7 @@ const PINS: PinDef[] = [
   { lat: 40.7562, lng: -73.982, kind: "zone" },
   { lat: 40.7528, lng: -73.976, kind: "bet" },
   { lat: 40.764, lng: -73.978, kind: "turn" },
+  { lat: 40.7545, lng: -73.988, kind: "zone" },
 ];
 
 const ROUTE: Array<{ lat: number; lng: number }> = [
@@ -57,9 +57,10 @@ const ROUTE: Array<{ lat: number; lng: number }> = [
   { lat: 40.7555, lng: -73.987 },
   { lat: 40.7595, lng: -73.981 },
   { lat: 40.7635, lng: -73.975 },
+  { lat: 40.766, lng: -73.97 },
 ];
 
-/** Real OSM/Carto map tiles with slow drift — sits behind hero headline only. */
+/** Colored Manhattan map with route, pins, and moving arrow — fills hero bottom panel. */
 export function HeroMapBackground() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -76,7 +77,6 @@ export function HeroMapBackground() {
     const startY = centerTileY - Math.floor(rows / 2);
     const list: Array<{ x: number; y: number; left: number; top: number; key: string }> =
       [];
-    let i = 0;
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const tx = startX + col;
@@ -88,7 +88,6 @@ export function HeroMapBackground() {
           top: row * TILE_PX,
           key: `${tx}-${ty}`,
         });
-        i++;
       }
     }
     return { list, originX: startX, originY: startY, cols, rows };
@@ -105,7 +104,6 @@ export function HeroMapBackground() {
     return () => ro.disconnect();
   }, []);
 
-  /* Slow map drift */
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -113,8 +111,8 @@ export function HeroMapBackground() {
     let py = 0;
     let raf = 0;
     const tick = () => {
-      px += 0.28;
-      py += 0.16;
+      px += 0.32;
+      py += 0.18;
       track.style.transform = `translate(${-(px % TILE_PX)}px, ${-(py % TILE_PX)}px)`;
       raf = requestAnimationFrame(tick);
     };
@@ -122,7 +120,6 @@ export function HeroMapBackground() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  /* Route + pins overlay */
   useEffect(() => {
     const wrap = wrapRef.current;
     const canvas = canvasRef.current;
@@ -132,10 +129,9 @@ export function HeroMapBackground() {
 
     let frame = 0;
     let raf = 0;
-    let dpr = 1;
 
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = wrap.clientWidth;
       const h = wrap.clientHeight;
       canvas.width = Math.floor(w * dpr);
@@ -157,24 +153,44 @@ export function HeroMapBackground() {
       t: number,
       i: number,
     ) => {
-      const bob = Math.sin(t * 1.6 + i) * 2;
-      const headY = y + bob - 9;
+      const bob = Math.sin(t * 1.8 + i) * 2.5;
+      const headY = y + bob - 11;
       const fill =
-        kind === "zone"
-          ? `rgba(${PURPLE_RGB}, 0.95)`
-          : kind === "turn"
-            ? "rgba(255,255,255,0.92)"
-            : `rgba(${GREEN_RGB}, 0.95)`;
+        kind === "zone" ? PURPLE : kind === "turn" ? "#ffffff" : GREEN;
+      const r = kind === "bet" ? 8 : 7;
 
       ctx.save();
       ctx.shadowColor = fill;
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 14;
       ctx.beginPath();
-      ctx.arc(x, headY, 6, Math.PI, 0);
-      ctx.lineTo(x, y + bob + 4);
+      ctx.arc(x, headY, r, Math.PI, 0);
+      ctx.lineTo(x, y + bob + 5);
       ctx.closePath();
       ctx.fillStyle = fill;
       ctx.fill();
+      ctx.strokeStyle = "rgba(0,0,0,0.35)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const drawArrow = (x: number, y: number, angle: number) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.shadowColor = GREEN;
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = GREEN;
+      ctx.beginPath();
+      ctx.moveTo(10, 0);
+      ctx.lineTo(-7, 6);
+      ctx.lineTo(-4, 0);
+      ctx.lineTo(-7, -6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "rgba(0,0,0,0.4)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
       ctx.restore();
     };
 
@@ -189,34 +205,37 @@ export function HeroMapBackground() {
 
       const routePx = ROUTE.map((p) => project(p.lat, p.lng, panX, panY));
       if (routePx.length >= 2) {
-        ctx.strokeStyle = `rgba(${PURPLE_RGB}, 1)`;
-        ctx.lineWidth = 3;
-        ctx.setLineDash([10, 8]);
-        ctx.lineDashOffset = -t * 24;
+        ctx.save();
+        ctx.strokeStyle = PURPLE;
+        ctx.lineWidth = 4;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.shadowColor = PURPLE;
+        ctx.shadowBlur = 8;
+        ctx.setLineDash([12, 7]);
+        ctx.lineDashOffset = -t * 28;
         ctx.beginPath();
         ctx.moveTo(routePx[0]!.x, routePx[0]!.y);
         for (let i = 1; i < routePx.length; i++) {
           ctx.lineTo(routePx[i]!.x, routePx[i]!.y);
         }
         ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.restore();
 
-        const seg = (t * 0.1) % (routePx.length - 1);
+        const seg = (t * 0.14) % (routePx.length - 1);
         const idx = Math.floor(seg);
         const f = seg - idx;
         const a = routePx[idx]!;
         const b = routePx[Math.min(idx + 1, routePx.length - 1)]!;
         const vx = a.x + (b.x - a.x) * f;
         const vy = a.y + (b.y - a.y) * f;
-        ctx.fillStyle = `rgba(${GREEN_RGB}, 1)`;
-        ctx.beginPath();
-        ctx.arc(vx, vy, 5, 0, Math.PI * 2);
-        ctx.fill();
+        const angle = Math.atan2(b.y - a.y, b.x - a.x);
+        drawArrow(vx, vy, angle);
       }
 
       PINS.forEach((pin, i) => {
         const p = project(pin.lat, pin.lng, panX, panY);
-        if (p.x < -20 || p.x > w + 20 || p.y < -20 || p.y > h + 20) return;
+        if (p.x < -24 || p.x > w + 24 || p.y < -24 || p.y > h + 24) return;
         drawPin(p.x, p.y, pin.kind, t, i);
       });
 

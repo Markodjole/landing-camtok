@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-/** Freestock — first-person bicycle ride down a sunny California street. */
+/** GoPro handlebar POV — NYC street cycling (hero loop). */
 const VIDEO_SRC = "/hero-bike-california.mp4";
 
 export function HeroVideoBackground() {
