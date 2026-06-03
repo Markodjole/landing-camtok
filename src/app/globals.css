@@ -1,6 +1,6 @@
 :root {
-  /* Logo purple — matches crosstown-logo.png / app theme (#8249DF) */
-  --purple: #8249df;
+  /* Brand purple */
+  --purple: #7137d3;
   --green: #6dff00;
   --green-dim: #56d700;
   --bg: #050505;
@@ -183,7 +183,7 @@ button {
   height: auto;
   display: block;
   object-fit: contain;
-  filter: drop-shadow(0 0 48px rgba(130, 73, 223, 0.4));
+  filter: drop-shadow(0 0 48px rgba(113, 55, 211, 0.4));
 }
 
 .hero-badge {
@@ -253,14 +253,14 @@ button {
   border-radius: 999px;
   background: var(--purple);
   color: white;
-  box-shadow: 0 8px 32px -8px rgba(130, 73, 223, 0.65);
+  box-shadow: 0 8px 32px -8px rgba(113, 55, 211, 0.65);
   transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
   filter: brightness(1.08);
-  box-shadow: 0 12px 40px -8px rgba(130, 73, 223, 0.8);
+  box-shadow: 0 12px 40px -8px rgba(113, 55, 211, 0.8);
 }
 
 .btn-secondary {
@@ -332,7 +332,7 @@ section {
   width: 2rem;
   height: 2rem;
   border-radius: 0.5rem;
-  background: rgba(130, 73, 223, 0.15);
+  background: rgba(113, 55, 211, 0.15);
   color: var(--purple);
   font-weight: 500;
   font-size: 0.875rem;
@@ -377,7 +377,7 @@ section {
 }
 
 .bet-card:hover {
-  border-color: rgba(130, 73, 223, 0.35);
+  border-color: rgba(113, 55, 211, 0.35);
   transform: translateY(-2px);
 }
 
@@ -403,7 +403,7 @@ section {
   gap: 1rem;
   background: linear-gradient(
     135deg,
-    rgba(130, 73, 223, 0.08) 0%,
+    rgba(113, 55, 211, 0.08) 0%,
     rgba(109, 255, 0, 0.04) 100%
   );
   border: 1px solid var(--border);
@@ -441,7 +441,7 @@ section {
 .cta-box {
   text-align: center;
   background: var(--bg-card);
-  border: 1px solid rgba(130, 73, 223, 0.25);
+  border: 1px solid rgba(113, 55, 211, 0.25);
   border-radius: 1.5rem;
   padding: 3rem 1.5rem;
   position: relative;
@@ -454,7 +454,7 @@ section {
   inset: 0;
   background: radial-gradient(
     ellipse 60% 80% at 50% 100%,
-    rgba(130, 73, 223, 0.15),
+    rgba(113, 55, 211, 0.15),
     transparent
   );
   pointer-events: none;
@@ -518,7 +518,7 @@ section {
 
 .cta-email input:focus,
 .cta-email-message:focus {
-  border-color: rgba(130, 73, 223, 0.5);
+  border-color: rgba(113, 55, 211, 0.5);
 }
 
 .cta-email button {
