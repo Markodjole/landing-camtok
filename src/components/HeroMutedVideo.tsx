@@ -7,6 +7,12 @@ type HeroMutedVideoProps = {
   className: string;
 };
 
+function lockSilent(video: HTMLVideoElement) {
+  video.muted = true;
+  video.volume = 0;
+  video.setAttribute("muted", "");
+}
+
 /** Autoplay background clip — always silent, no playback controls. */
 export function HeroMutedVideo({ src, className }: HeroMutedVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -15,17 +21,29 @@ export function HeroMutedVideo({ src, className }: HeroMutedVideoProps) {
     const video = videoRef.current;
     if (!video) return;
 
-    const enforceMute = () => {
-      video.muted = true;
-      video.defaultMuted = true;
-      video.volume = 0;
-    };
+    lockSilent(video);
 
-    enforceMute();
+    const onMediaEvent = () => lockSilent(video);
+    const events = [
+      "loadedmetadata",
+      "loadeddata",
+      "canplay",
+      "play",
+      "playing",
+      "volumechange",
+    ] as const;
+
+    for (const event of events) {
+      video.addEventListener(event, onMediaEvent);
+    }
+
     video.play().catch(() => {});
 
-    video.addEventListener("volumechange", enforceMute);
-    return () => video.removeEventListener("volumechange", enforceMute);
+    return () => {
+      for (const event of events) {
+        video.removeEventListener(event, onMediaEvent);
+      }
+    };
   }, []);
 
   return (
@@ -37,7 +55,7 @@ export function HeroMutedVideo({ src, className }: HeroMutedVideoProps) {
       muted
       loop
       playsInline
-      preload="auto"
+      preload="metadata"
       controls={false}
       controlsList="nodownload nofullscreen noremoteplayback"
       disablePictureInPicture
