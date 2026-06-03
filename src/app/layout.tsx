@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Exo_2 } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
+const exo2 = Exo_2({
   subsets: ["latin"],
   display: "swap",
+  preload: false,
+  variable: "--font-exo2",
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/crosstown-brand.png",
+    icon: "/crosstown-logo.png",
   },
 };
 
@@ -31,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={outfit.className}>
-      <body>{children}</body>
+    <html lang="en" className={exo2.variable}>
+      <body className={exo2.className}>{children}</body>
     </html>
   );
 }

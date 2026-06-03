@@ -40,16 +40,12 @@ export default function HomePage() {
 
             <div className="hero-logo-wrap">
               <Image
-                src="/crosstown-brand.png"
-                alt="Crosstown logo"
+                src="/crosstown-logo.png"
+                alt="Crosstown"
                 width={1024}
-                height={1024}
+                height={269}
                 priority
-                style={{
-                  objectFit: "contain",
-                  objectPosition: "top center",
-                  clipPath: "inset(0 0 58% 0)",
-                }}
+                className="hero-logo"
               />
             </div>
           </div>
@@ -195,9 +191,8 @@ export default function HomePage() {
           <div className="footer-brand">
             <div className="logo-mark">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/crosstown-brand.png" alt="" />
+              <img src="/crosstown-logo.png" alt="Crosstown" />
             </div>
-            Crosstown
           </div>
           <nav className="footer-links" aria-label="Footer">
             <a href="mailto:hello@playcrosstown.com">Contact</a>

@@ -18,7 +18,7 @@ export function NavBar() {
         <a href="#" aria-label="Crosstown home">
           <div className="logo-mark">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/crosstown-brand.png" alt="" />
+            <img src="/crosstown-logo.png" alt="Crosstown" />
           </div>
         </a>
         <a href="#early-access" className="nav-cta">
@@ -30,35 +30,70 @@ export function NavBar() {
 }
 
 export function WaitlistForm() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
+    "idle",
+  );
+  const [errorMsg, setErrorMsg] = useState("");
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const email = String(fd.get("email") ?? "").trim();
+    const website = String(fd.get("website") ?? "").trim();
     if (!email) return;
-    window.location.href = `mailto:hello@playcrosstown.com?subject=Crosstown%20waitlist&body=Please%20add%20me%3A%20${encodeURIComponent(email)}`;
-    setSubmitted(true);
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, website }),
+      });
+      const data = (await res.json()) as { error?: string; ok?: boolean };
+
+      if (!res.ok) {
+        setStatus("error");
+        setErrorMsg(data.error ?? "Could not join waitlist. Try again.");
+        return;
+      }
+
+      setStatus("success");
+      e.currentTarget.reset();
+    } catch {
+      setStatus("error");
+      setErrorMsg("Network error. Check your connection and try again.");
+    }
   }
 
-  if (submitted) {
+  if (status === "success") {
     return (
-      <p className="cta-note" style={{ color: "var(--green)" }}>
-        Thanks — your email client should open. We&apos;ll be in touch.
+      <p className="cta-note cta-success">
+        You&apos;re on the list — we&apos;ll email you when Crosstown opens.
       </p>
     );
   }
 
   return (
-    <form className="cta-email" onSubmit={onSubmit}>
-      <input
-        type="email"
-        name="email"
-        placeholder="you@email.com"
-        required
-        autoComplete="email"
-      />
-      <button type="submit">Join waitlist</button>
-    </form>
+    <>
+      <form className="cta-email" onSubmit={onSubmit}>
+        <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp-field" aria-hidden />
+        <input
+          type="email"
+          name="email"
+          placeholder="you@email.com"
+          required
+          autoComplete="email"
+          disabled={status === "loading"}
+        />
+        <button type="submit" disabled={status === "loading"}>
+          {status === "loading" ? "Joining…" : "Join waitlist"}
+        </button>
+      </form>
+      {status === "error" && errorMsg ? (
+        <p className="cta-note cta-error">{errorMsg}</p>
+      ) : null}
+    </>
   );
 }
