@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Exo_2 } from "next/font/google";
 import "./globals.css";
 
@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/crosstown-logo.png",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#8249df",
 };
 
 export default function RootLayout({

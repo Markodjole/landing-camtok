@@ -1,6 +1,6 @@
 :root {
+  /* Logo purple — matches crosstown-logo.png / app theme (#8249DF) */
   --purple: #8249df;
-  --purple-bright: #9b5cff;
   --green: #6dff00;
   --green-dim: #56d700;
   --bg: #050505;
@@ -107,7 +107,7 @@ button {
 }
 
 .nav-cta:hover {
-  background: var(--purple-bright);
+  filter: brightness(1.1);
   transform: translateY(-1px);
 }
 
@@ -230,7 +230,7 @@ button {
 }
 
 .hero h1 span {
-  color: var(--purple-bright);
+  color: var(--purple);
 }
 
 .hero-lead {
@@ -251,14 +251,15 @@ button {
   font-size: 1rem;
   padding: 0.85rem 1.5rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--purple) 0%, #6d28d9 100%);
+  background: var(--purple);
   color: white;
   box-shadow: 0 8px 32px -8px rgba(130, 73, 223, 0.65);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
+  filter: brightness(1.08);
   box-shadow: 0 12px 40px -8px rgba(130, 73, 223, 0.8);
 }
 
@@ -287,7 +288,7 @@ section {
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--purple-bright);
+  color: var(--purple);
   margin-bottom: 0.75rem;
 }
 
@@ -332,7 +333,7 @@ section {
   height: 2rem;
   border-radius: 0.5rem;
   background: rgba(130, 73, 223, 0.15);
-  color: var(--purple-bright);
+  color: var(--purple);
   font-weight: 500;
   font-size: 0.875rem;
   margin-bottom: 1rem;
