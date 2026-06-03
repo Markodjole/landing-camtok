@@ -316,6 +316,7 @@ button {
   object-position: center center;
   opacity: 0.36;
   filter: saturate(0.9) brightness(0.72) contrast(1);
+  pointer-events: none;
 }
 
 .hero-map-bg::after {
@@ -342,6 +343,7 @@ button {
   object-position: center 88%;
   opacity: 0.58;
   filter: saturate(1.02) brightness(0.78) contrast(1.04);
+  pointer-events: none;
 }
 
 .hero-video-bg::after {
