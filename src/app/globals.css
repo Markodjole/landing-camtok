@@ -191,10 +191,10 @@ button {
   position: relative;
   border-radius: 1.25rem;
   padding: clamp(1.25rem, 3vw, 2rem);
-  background: rgba(5, 5, 5, 0.62);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(var(--purple-rgb), 0.2);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  background: rgba(5, 5, 5, 0.48);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(var(--purple-rgb), 0.22);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
 }
 
 .hero-copy-inner {
@@ -206,7 +206,7 @@ button {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.42;
+  opacity: 0.78;
 }
 
 .hero-map-canvas {
@@ -220,10 +220,10 @@ button {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 80% 70% at 35% 45%,
+    ellipse 85% 75% at 40% 45%,
     transparent 0%,
-    rgba(5, 5, 5, 0.55) 70%,
-    rgba(5, 5, 5, 0.85) 100%
+    rgba(5, 5, 5, 0.25) 55%,
+    rgba(5, 5, 5, 0.62) 100%
   );
 }
 

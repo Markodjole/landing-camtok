@@ -3,6 +3,19 @@
 import { useEffect, useRef } from "react";
 
 const PURPLE_RGB = "108, 35, 237";
+const GREEN_RGB = "109, 255, 0";
+
+/** World-space pin locations — scroll with the panned grid. */
+const MAP_PINS: Array<{ wx: number; wy: number; kind: "bet" | "turn" | "zone" }> = [
+  { wx: 140, wy: 180, kind: "turn" },
+  { wx: 320, wy: 260, kind: "zone" },
+  { wx: 480, wy: 140, kind: "bet" },
+  { wx: 620, wy: 320, kind: "turn" },
+  { wx: 780, wy: 200, kind: "zone" },
+  { wx: 920, wy: 380, kind: "bet" },
+  { wx: 1080, wy: 160, kind: "turn" },
+  { wx: 1240, wy: 280, kind: "zone" },
+];
 
 /** Animated panning city map — full hero backdrop. */
 export function HeroMapBackground() {
@@ -48,9 +61,9 @@ export function HeroMapBackground() {
           const h = hash(gx, gy);
           if (h < 0.12) continue;
           const pad = 4 + h * 5;
-          ctx.fillStyle = `rgba(${PURPLE_RGB}, ${0.08 + h * 0.1})`;
+          ctx.fillStyle = `rgba(${PURPLE_RGB}, ${0.14 + h * 0.14})`;
           ctx.fillRect(x + ox + pad, y + oy + pad, block - pad * 2, block - pad * 2);
-          ctx.fillStyle = `rgba(255, 255, 255, ${0.02 + h * 0.03})`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.04 + h * 0.05})`;
           ctx.fillRect(x + ox + pad + 2, y + oy + pad + 2, block - pad * 2 - 4, block - pad * 2 - 4);
         }
       }
@@ -59,7 +72,7 @@ export function HeroMapBackground() {
     const drawRoads = (ox: number, oy: number) => {
       ctx.lineCap = "square";
       const major = 104;
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.14)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
       ctx.lineWidth = 3;
       for (let x = (-ox % major) - major; x < width + major; x += major) {
         ctx.beginPath();
@@ -74,7 +87,7 @@ export function HeroMapBackground() {
         ctx.stroke();
       }
 
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.07)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.11)";
       ctx.lineWidth = 1.5;
       const minor = 52;
       for (let x = (-ox % minor) - minor; x < width + minor; x += minor) {
@@ -105,6 +118,67 @@ export function HeroMapBackground() {
         x: p.x + Math.sin(t * 0.7 + i * 0.9) * 8,
         y: p.y + Math.cos(t * 0.55 + i * 1.1) * 7,
       }));
+    };
+
+    const drawMapPin = (
+      x: number,
+      y: number,
+      kind: "bet" | "turn" | "zone",
+      t: number,
+      pulse: number,
+    ) => {
+      const bob = Math.sin(t * 1.8 + pulse) * 2.5;
+      const headY = y + bob - 10;
+      const fill =
+        kind === "zone"
+          ? `rgba(${PURPLE_RGB}, 0.95)`
+          : kind === "turn"
+            ? "rgba(255, 255, 255, 0.92)"
+            : `rgba(${GREEN_RGB}, 0.95)`;
+      const ring =
+        kind === "zone"
+          ? `rgba(${PURPLE_RGB}, 0.5)`
+          : kind === "turn"
+            ? "rgba(255, 255, 255, 0.4)"
+            : `rgba(${GREEN_RGB}, 0.5)`;
+
+      ctx.save();
+      ctx.shadowColor = fill;
+      ctx.shadowBlur = 12;
+
+      ctx.beginPath();
+      ctx.arc(x, headY, 7, Math.PI, 0);
+      ctx.lineTo(x, y + bob + 5);
+      ctx.closePath();
+      ctx.fillStyle = fill;
+      ctx.fill();
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.35)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.arc(x, headY, 2.8, 0, Math.PI * 2);
+      ctx.fillStyle = kind === "turn" ? `rgba(${PURPLE_RGB}, 0.9)` : "rgba(0,0,0,0.35)";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(x, y + bob + 6, 4 + Math.sin(t * 3 + pulse) * 1.5, 0, Math.PI * 2);
+      ctx.strokeStyle = ring;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const drawPins = (ox: number, oy: number, t: number) => {
+      const span = 1300;
+      MAP_PINS.forEach((pin, i) => {
+        let px = ((pin.wx + ox) % span) - 80;
+        if (px < -40) px += span;
+        const py = ((pin.wy + oy * 0.85) % (height + 200)) - 40;
+        if (px < -20 || px > width + 20 || py < -20 || py > height + 20) return;
+        drawMapPin(px, py, pin.kind, t, i * 1.7);
+      });
     };
 
     const drawRoute = (t: number) => {
@@ -156,6 +230,7 @@ export function HeroMapBackground() {
         ctx.clearRect(0, 0, width, height);
         drawBlocks(ox, oy);
         drawRoads(ox, oy);
+        drawPins(ox, oy, t);
         drawRoute(t);
       }
       animId = requestAnimationFrame(draw);
