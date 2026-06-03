@@ -52,6 +52,7 @@ export default function HomePage() {
             </div>
 
             <div className="hero-logo-wrap">
+              <div className="hero-logo-web" aria-hidden />
               <Image
                 src="/crosstown-logo.png"
                 alt="Crosstown"
