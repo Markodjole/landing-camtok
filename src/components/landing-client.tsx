@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { submitWaitlistEmail } from "@/lib/waitlist-inbox";
 
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false);
@@ -45,26 +46,20 @@ export function WaitlistForm() {
     setStatus("loading");
     setErrorMsg("");
 
-    try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, website }),
-      });
-      const data = (await res.json()) as { error?: string; ok?: boolean };
-
-      if (!res.ok) {
-        setStatus("error");
-        setErrorMsg(data.error ?? "Could not join waitlist. Try again.");
-        return;
-      }
-
+    if (website) {
       setStatus("success");
-      e.currentTarget.reset();
-    } catch {
-      setStatus("error");
-      setErrorMsg("Network error. Check your connection and try again.");
+      return;
     }
+
+    const result = await submitWaitlistEmail(email.toLowerCase());
+    if (!result.ok) {
+      setStatus("error");
+      setErrorMsg(result.error);
+      return;
+    }
+
+    setStatus("success");
+    e.currentTarget.reset();
   }
 
   if (status === "success") {

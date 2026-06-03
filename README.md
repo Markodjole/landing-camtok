@@ -18,12 +18,12 @@ Signups go to FormSubmit and forward to your inbox. The deployed site works out 
 Optional `.env.local`:
 
 ```bash
-WAITLIST_TO_EMAIL=your@gmail.com
+NEXT_PUBLIC_WAITLIST_TO_EMAIL=your@gmail.com
 ```
 
-After changing the inbox, submit the form **once** — FormSubmit sends a one-time activation link to that address; click it. After that, every signup emails you automatically.
+After changing the inbox, submit the form **once** from the live site — FormSubmit sends a one-time activation link to that address; click it. After that, every signup emails you automatically.
 
-On Vercel: add `WAITLIST_TO_EMAIL` under **Settings → Environment Variables** (Production), then redeploy.
+On Vercel: add `NEXT_PUBLIC_WAITLIST_TO_EMAIL` under **Settings → Environment Variables** (Production), then redeploy.
 
 Uses [FormSubmit](https://formsubmit.co) — free, works with Gmail, no account signup.
 
