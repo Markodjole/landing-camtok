@@ -314,9 +314,23 @@ button {
   height: 100%;
   object-fit: cover;
   object-position: center center;
-  opacity: 0.48;
+  opacity: 1;
   filter: saturate(0.92) brightness(0.78) contrast(1.02);
   pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    ellipse 78% 88% at 50% 50%,
+    rgba(0, 0, 0, 0.52) 0%,
+    rgba(0, 0, 0, 0.48) 38%,
+    rgba(0, 0, 0, 0.24) 68%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 78% 88% at 50% 50%,
+    rgba(0, 0, 0, 0.52) 0%,
+    rgba(0, 0, 0, 0.48) 38%,
+    rgba(0, 0, 0, 0.24) 68%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
 }
 
 .hero-map-bg::after {
@@ -324,14 +338,12 @@ button {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(5, 5, 5, 0.58) 0%,
-      rgba(5, 5, 5, 0.34) 38%,
-      rgba(5, 5, 5, 0.46) 100%
-    ),
-    rgba(5, 5, 5, 0.2);
+  background: linear-gradient(
+    180deg,
+    rgba(5, 5, 5, 0.48) 0%,
+    rgba(5, 5, 5, 0.1) 30%,
+    rgba(5, 5, 5, 0.22) 100%
+  );
   pointer-events: none;
 }
 
