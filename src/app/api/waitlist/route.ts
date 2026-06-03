@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { submitWaitlistEmail } from "@/lib/waitlist-inbox";
+import { submitWaitlistEmail } from "@/lib/formsubmit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

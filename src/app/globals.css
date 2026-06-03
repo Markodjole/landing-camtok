@@ -434,6 +434,10 @@ section {
   padding: 5rem 0 6rem;
 }
 
+.contact-section {
+  padding-top: 0;
+}
+
 .cta-box {
   text-align: center;
   background: var(--bg-card);

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { NavBar, WaitlistForm } from "@/components/landing-client";
+import { ContactForm, NavBar, WaitlistForm } from "@/components/landing-client";
 
 export default function HomePage() {
   return (
@@ -184,6 +184,19 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <section id="contact" className="cta-section contact-section">
+          <div className="container">
+            <div className="cta-box">
+              <h2>Contact</h2>
+              <p>
+                Questions, partnerships, or press — send a message and we&apos;ll
+                reply by email.
+              </p>
+              <ContactForm />
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer>
@@ -195,7 +208,7 @@ export default function HomePage() {
             </div>
           </div>
           <nav className="footer-links" aria-label="Footer">
-            <a href="mailto:hello@playcrosstown.com">Contact</a>
+            <a href="#contact">Contact</a>
             <a href="#how-it-works">How it works</a>
           </nav>
           <span>© {new Date().getFullYear()} Crosstown</span>
