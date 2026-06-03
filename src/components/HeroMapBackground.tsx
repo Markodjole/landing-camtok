@@ -13,6 +13,8 @@ const ROUTE_DURATION_MS = 60_000;
 const ZOOM = 15;
 const TILE_PX = 256;
 const SUBDOMAINS = ["a", "b", "c", "d"] as const;
+const PURPLE_RGB = "108, 35, 237";
+const GREEN_RGB = "109, 255, 0";
 const PURPLE = "#6c23ed";
 const GREEN = "#6dff00";
 
@@ -29,7 +31,7 @@ function latToTileY(lat: number, zoom: number) {
 
 function tileUrl(x: number, y: number, z: number, i: number) {
   const sub = SUBDOMAINS[i % SUBDOMAINS.length]!;
-  return `https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png`;
+  return `https://${sub}.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
 }
 
 function latLngToPixel(
@@ -56,7 +58,7 @@ function centerOf(path: LatLng[]) {
   return { lat, lng };
 }
 
-/** Manhattan route map — tiles + 1 min animated ride (no client Google key). */
+/** Manhattan route map — dark tiles, green arrow, pins, zone blocks. */
 export function HeroMapBackground() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -137,8 +139,8 @@ export function HeroMapBackground() {
     let py = 0;
     let raf = 0;
     const tick = () => {
-      px += 0.24;
-      py += 0.14;
+      px += 0.28;
+      py += 0.16;
       track.style.transform = `translate(${-(px % TILE_PX)}px, ${-(py % TILE_PX)}px)`;
       raf = requestAnimationFrame(tick);
     };
@@ -175,44 +177,99 @@ export function HeroMapBackground() {
       return { x: p.x + panX, y: p.y + panY };
     };
 
-    const drawPin = (
+    const drawMapPin = (
       x: number,
       y: number,
-      kind: "bet" | "turn" | "zone",
+      kind: "bet" | "turn" | "zone" | "dest",
       t: number,
-      i: number,
+      pulse: number,
     ) => {
-      const bob = Math.sin(t * 1.8 + i) * 2.5;
-      const headY = y + bob - 11;
+      const bob = Math.sin(t * 1.8 + pulse) * 2.5;
+      const headY = y + bob - 10;
       const fill =
-        kind === "zone" ? PURPLE : kind === "turn" ? "#ffffff" : GREEN;
-      const r = kind === "bet" ? 8 : 7;
+        kind === "dest" || kind === "zone"
+          ? `rgba(${PURPLE_RGB}, 0.95)`
+          : kind === "turn"
+            ? "rgba(255, 255, 255, 0.92)"
+            : `rgba(${GREEN_RGB}, 0.95)`;
+      const ring =
+        kind === "dest" || kind === "zone"
+          ? `rgba(${PURPLE_RGB}, 0.5)`
+          : kind === "turn"
+            ? "rgba(255, 255, 255, 0.4)"
+            : `rgba(${GREEN_RGB}, 0.5)`;
+      const headR = kind === "dest" ? 8 : 7;
 
       ctx.save();
       ctx.shadowColor = fill;
-      ctx.shadowBlur = 14;
+      ctx.shadowBlur = 12;
+
       ctx.beginPath();
-      ctx.arc(x, headY, r, Math.PI, 0);
+      ctx.arc(x, headY, headR, Math.PI, 0);
       ctx.lineTo(x, y + bob + 5);
       ctx.closePath();
       ctx.fillStyle = fill;
       ctx.fill();
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.35)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.arc(x, headY, 2.8, 0, Math.PI * 2);
+      ctx.fillStyle =
+        kind === "turn" ? `rgba(${PURPLE_RGB}, 0.9)` : "rgba(255, 255, 255, 0.85)";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(x, y + bob + 6, 4 + Math.sin(t * 3 + pulse) * 1.5, 0, Math.PI * 2);
+      ctx.strokeStyle = ring;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
       ctx.restore();
     };
 
-    const drawArrow = (x: number, y: number, angle: number) => {
+    const drawZoneBlock = (x: number, y: number, t: number, i: number) => {
+      const size = 72;
+      const pulse = 0.12 + Math.sin(t * 1.2 + i) * 0.04;
+      ctx.save();
+      ctx.fillStyle = `rgba(${PURPLE_RGB}, ${pulse})`;
+      ctx.strokeStyle = `rgba(${PURPLE_RGB}, 0.55)`;
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(x - size / 2, y - size / 2, size, size);
+      ctx.strokeRect(x - size / 2, y - size / 2, size, size);
+      ctx.restore();
+    };
+
+    const drawArrow = (x: number, y: number, angle: number, t: number) => {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(angle);
-      ctx.shadowColor = GREEN;
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = GREEN;
+
+      ctx.strokeStyle = `rgba(${GREEN_RGB}, 0.45)`;
+      ctx.lineWidth = 10;
       ctx.beginPath();
-      ctx.moveTo(10, 0);
-      ctx.lineTo(-7, 6);
-      ctx.lineTo(-4, 0);
-      ctx.lineTo(-7, -6);
+      ctx.arc(0, 0, 12, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.shadowColor = GREEN;
+      ctx.shadowBlur = 14;
+      ctx.fillStyle = GREEN;
+      ctx.strokeStyle = "#0a0a0a";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(11, 0);
+      ctx.lineTo(-8, 6.5);
+      ctx.lineTo(-4.5, 0);
+      ctx.lineTo(-8, -6.5);
       ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = `rgba(${GREEN_RGB}, ${0.35 + Math.sin(t * 4) * 0.15})`;
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     };
@@ -226,8 +283,8 @@ export function HeroMapBackground() {
       const elapsed = (now - startRef.current) % ROUTE_DURATION_MS;
       const progress = elapsed / ROUTE_DURATION_MS;
       const t = now / 1000;
-      const panX = -((t * 12) % TILE_PX);
-      const panY = -((t * 7) % TILE_PX);
+      const panX = -((t * 16) % TILE_PX);
+      const panY = -((t * 9) % TILE_PX);
       const w = wrap.clientWidth;
       const h = wrap.clientHeight;
       ctx.clearRect(0, 0, w, h);
@@ -235,17 +292,19 @@ export function HeroMapBackground() {
       const routePx = path.map((p) => project(p.lat, p.lng, panX, panY));
 
       ctx.save();
-      ctx.strokeStyle = PURPLE;
+      ctx.strokeStyle = `rgba(${PURPLE_RGB}, 0.85)`;
       ctx.lineWidth = 4;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.globalAlpha = 0.4;
+      ctx.setLineDash([12, 9]);
+      ctx.lineDashOffset = -t * 28;
       ctx.beginPath();
       ctx.moveTo(routePx[0]!.x, routePx[0]!.y);
       for (let i = 1; i < routePx.length; i++) {
         ctx.lineTo(routePx[i]!.x, routePx[i]!.y);
       }
       ctx.stroke();
+      ctx.setLineDash([]);
       ctx.restore();
 
       const doneIdx = Math.max(2, Math.floor(progress * (routePx.length - 1)) + 1);
@@ -262,19 +321,21 @@ export function HeroMapBackground() {
       ctx.stroke();
       ctx.restore();
 
-      const pos = pointAtRouteProgress(path, progress);
-      const rider = project(pos.lat, pos.lng, panX, panY);
-      drawArrow(rider.x, rider.y, (pos.heading * Math.PI) / 180);
-
-      const dest = routePx[routePx.length - 1]!;
-      drawPin(dest.x, dest.y, "zone", t, 99);
-
       HERO_PIN_STOPS.forEach(({ progress: p, kind }, i) => {
         const pin = pointAtRouteProgress(path, p);
         const px = project(pin.lat, pin.lng, panX, panY);
-        if (px.x < -24 || px.x > w + 24 || px.y < -24 || px.y > h + 24) return;
-        drawPin(px.x, px.y, kind, t, i);
+        if (px.x < -60 || px.x > w + 60 || px.y < -60 || px.y > h + 60) return;
+        if (kind === "zone") drawZoneBlock(px.x, px.y, t, i);
+        drawMapPin(px.x, px.y, kind, t, i);
       });
+
+      const dest = project(HERO_DESTINATION.lat, HERO_DESTINATION.lng, panX, panY);
+      drawZoneBlock(dest.x, dest.y, t, 99);
+      drawMapPin(dest.x, dest.y, "dest", t, 99);
+
+      const pos = pointAtRouteProgress(path, progress);
+      const rider = project(pos.lat, pos.lng, panX, panY);
+      drawArrow(rider.x, rider.y, (pos.heading * Math.PI) / 180, t);
 
       raf = requestAnimationFrame(draw);
     };
