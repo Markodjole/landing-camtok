@@ -9,13 +9,13 @@ export default function HomePage() {
 
       <main>
         <section className="hero">
-          <HeroMapBackground />
           <div className="hero-glow purple" aria-hidden />
           <div className="hero-glow green" aria-hidden />
           <div className="hero-grid" aria-hidden />
 
           <div className="container hero-content">
             <div className="hero-copy">
+              <HeroMapBackground />
               <div className="hero-copy-inner">
               <div className="hero-badge">
                 <span className="hero-badge-dot" aria-hidden />
@@ -250,6 +250,16 @@ export default function HomePage() {
             <a href="#how-it-works">How it works</a>
           </nav>
           <span>© {new Date().getFullYear()} Crosstown</span>
+          <span className="footer-map-attrib">
+            Map ©{" "}
+            <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
+              OpenStreetMap
+            </a>{" "}
+            ©{" "}
+            <a href="https://carto.com/attributions" target="_blank" rel="noreferrer">
+              CARTO
+            </a>
+          </span>
         </div>
       </footer>
     </>

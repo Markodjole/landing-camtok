@@ -189,16 +189,19 @@ button {
 
 .hero-copy {
   position: relative;
+  overflow: hidden;
   border-radius: 1.25rem;
   padding: clamp(1.25rem, 3vw, 2rem);
-  background: rgba(5, 5, 5, 0.48);
-  backdrop-filter: blur(8px);
+  background: rgba(5, 5, 5, 0.55);
+  backdrop-filter: blur(4px);
   border: 1px solid rgba(var(--purple-rgb), 0.22);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  min-height: min(380px, 62svh);
 }
 
 .hero-copy-inner {
   position: relative;
+  z-index: 2;
 }
 
 .hero-map-bg {
@@ -206,25 +209,46 @@ button {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.78;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
-.hero-map-canvas {
+.hero-map-track {
+  position: absolute;
+  inset: -32px;
+  will-change: transform;
+}
+
+.hero-map-tile {
+  position: absolute;
   display: block;
+  width: 256px;
+  height: 256px;
+  opacity: 0.88;
+  filter: saturate(0.85) brightness(0.75);
+}
+
+.hero-map-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
 
 .hero-map-bg::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse 85% 75% at 40% 45%,
-    transparent 0%,
-    rgba(5, 5, 5, 0.25) 55%,
-    rgba(5, 5, 5, 0.62) 100%
+  z-index: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(5, 5, 5, 0.72) 0%,
+    rgba(5, 5, 5, 0.35) 45%,
+    rgba(5, 5, 5, 0.65) 100%
   );
+  pointer-events: none;
 }
 
 @media (min-width: 900px) {
@@ -717,4 +741,18 @@ footer {
 
 .footer-links a:hover {
   color: var(--text);
+}
+
+.footer-map-attrib {
+  font-size: 0.7rem;
+  opacity: 0.55;
+}
+
+.footer-map-attrib a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer-map-attrib a:hover {
+  opacity: 1;
 }
