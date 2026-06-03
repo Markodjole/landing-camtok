@@ -24,9 +24,14 @@ export function NavBar() {
             <img src="/crosstown-logo.png" alt="Crosstown" />
           </div>
         </a>
-        <a href="#early-access" className="nav-cta">
-          Get early access
-        </a>
+        <div className="nav-actions">
+          <a href="#contact" className="nav-link">
+            Contact
+          </a>
+          <a href="#early-access" className="nav-cta">
+            Get early access
+          </a>
+        </div>
       </div>
     </header>
   );

@@ -9,13 +9,13 @@ export default function HomePage() {
 
       <main>
         <section className="hero">
+          <HeroMapBackground />
           <div className="hero-glow purple" aria-hidden />
           <div className="hero-glow green" aria-hidden />
           <div className="hero-grid" aria-hidden />
 
           <div className="container hero-content">
             <div className="hero-copy">
-              <HeroMapBackground />
               <div className="hero-copy-inner">
               <div className="hero-badge">
                 <span className="hero-badge-dot" aria-hidden />
@@ -185,6 +185,40 @@ export default function HomePage() {
               </p>
               <WaitlistForm />
               <p className="cta-note">Drivers &amp; viewers welcome. No spam.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="for-you" className="for-you-section">
+          <div className="container">
+            <p className="section-label">Who it&apos;s for</p>
+            <h2 className="section-title">Watch, drive, or partner</h2>
+            <p className="section-lead">
+              Crosstown is a live room around a real drive — not a highlight reel.
+              Pick the lane that fits you.
+            </p>
+            <div className="for-you-grid">
+              <article className="for-you-card">
+                <h3>Viewers</h3>
+                <p>
+                  Follow the dashcam and map, read the next junction, and stake
+                  before the bet window locks. Every outcome settles from GPS.
+                </p>
+              </article>
+              <article className="for-you-card">
+                <h3>Drivers</h3>
+                <p>
+                  Stream from your phone, keep driving normally, and let viewers
+                  bet on your next moves. Early rooms opening city by city.
+                </p>
+              </article>
+              <article className="for-you-card">
+                <h3>Partners &amp; press</h3>
+                <p>
+                  Building something in mobility, media, or live entertainment?
+                  We&apos;d love to hear from you — reach out below.
+                </p>
+              </article>
             </div>
           </div>
         </section>

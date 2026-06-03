@@ -69,6 +69,26 @@ button {
   height: 5.5rem;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .nav .logo-mark {
   width: auto;
   height: auto;
@@ -128,6 +148,7 @@ button {
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.45;
+  z-index: 1;
 }
 
 .hero-glow.purple {
@@ -150,6 +171,7 @@ button {
 .hero-grid {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
@@ -167,37 +189,42 @@ button {
 
 .hero-copy {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   border-radius: 1.25rem;
   padding: clamp(1.25rem, 3vw, 2rem);
-  min-height: min(420px, 70svh);
-  display: flex;
-  align-items: center;
+  background: rgba(5, 5, 5, 0.62);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(var(--purple-rgb), 0.2);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
 }
 
 .hero-copy-inner {
   position: relative;
-  z-index: 1;
 }
 
 .hero-map-bg {
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.55;
   pointer-events: none;
-  mask-image: radial-gradient(
-    ellipse 95% 90% at 30% 50%,
-    black 15%,
-    transparent 88%
-  );
+  opacity: 0.42;
 }
 
 .hero-map-canvas {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.hero-map-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 70% at 35% 45%,
+    transparent 0%,
+    rgba(5, 5, 5, 0.55) 70%,
+    rgba(5, 5, 5, 0.85) 100%
+  );
 }
 
 @media (min-width: 900px) {
@@ -475,6 +502,47 @@ section {
 
 .contact-section {
   padding-top: 0;
+}
+
+.for-you-section {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.for-you-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .for-you-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.for-you-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.for-you-card:hover {
+  border-color: rgba(var(--purple-rgb), 0.35);
+  transform: translateY(-2px);
+}
+
+.for-you-card h3 {
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--purple);
+}
+
+.for-you-card p {
+  font-size: 0.925rem;
+  color: var(--muted);
 }
 
 .cta-box {
