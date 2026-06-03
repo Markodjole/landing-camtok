@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-/** GoPro handlebar POV — NYC street cycling (hero loop). */
+/** Hero loop — 1 min clip from youtube.com/watch?v=_lpOE6_9Udk (from 12:28). */
 const VIDEO_SRC = "/hero-bike-california.mp4";
 
 export function HeroVideoBackground() {
