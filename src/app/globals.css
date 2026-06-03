@@ -475,15 +475,21 @@ section {
 
 .cta-email {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
+  flex-direction: column;
+  gap: 0.65rem;
   max-width: 420px;
   margin-inline: auto;
 }
 
-.cta-email input {
-  flex: 1 1 200px;
+.cta-email-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.cta-email input,
+.cta-email-message {
   min-width: 0;
   padding: 0.85rem 1rem;
   border-radius: 999px;
@@ -494,7 +500,20 @@ section {
   outline: none;
 }
 
-.cta-email input:focus {
+.cta-email input {
+  flex: 1 1 200px;
+}
+
+.cta-email-message {
+  width: 100%;
+  border-radius: 1rem;
+  resize: vertical;
+  min-height: 4.5rem;
+  line-height: 1.45;
+}
+
+.cta-email input:focus,
+.cta-email-message:focus {
   border-color: rgba(130, 73, 223, 0.5);
 }
 

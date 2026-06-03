@@ -41,6 +41,7 @@ export function WaitlistForm() {
     const fd = new FormData(e.currentTarget);
     const email = String(fd.get("email") ?? "").trim();
     const website = String(fd.get("website") ?? "").trim();
+    const message = String(fd.get("message") ?? "").trim();
     if (!email) return;
 
     setStatus("loading");
@@ -51,7 +52,7 @@ export function WaitlistForm() {
       return;
     }
 
-    const result = await submitWaitlistEmail(email.toLowerCase());
+    const result = await submitWaitlistEmail(email.toLowerCase(), message);
     if (!result.ok) {
       setStatus("error");
       setErrorMsg(result.error);
@@ -74,17 +75,27 @@ export function WaitlistForm() {
     <>
       <form className="cta-email" onSubmit={onSubmit}>
         <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hp-field" aria-hidden />
-        <input
-          type="email"
-          name="email"
-          placeholder="you@email.com"
-          required
-          autoComplete="email"
+        <div className="cta-email-row">
+          <input
+            type="email"
+            name="email"
+            placeholder="you@email.com"
+            required
+            autoComplete="email"
+            disabled={status === "loading"}
+          />
+          <button type="submit" disabled={status === "loading"}>
+            {status === "loading" ? "Joining…" : "Join waitlist"}
+          </button>
+        </div>
+        <textarea
+          name="message"
+          className="cta-email-message"
+          placeholder="Optional — city, how you'd use Crosstown, etc."
+          rows={3}
+          maxLength={500}
           disabled={status === "loading"}
         />
-        <button type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "Joining…" : "Join waitlist"}
-        </button>
       </form>
       {status === "error" && errorMsg ? (
         <p className="cta-note cta-error">{errorMsg}</p>

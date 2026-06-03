@@ -7,6 +7,7 @@ export async function POST(req: Request) {
   const body = (await req.json()) as {
     email?: string;
     website?: string;
+    message?: string;
   };
 
   if (body.website) {
@@ -24,7 +25,9 @@ export async function POST(req: Request) {
     );
   }
 
-  const result = await submitWaitlistEmail(email);
+  const message = String(body.message ?? "").trim();
+
+  const result = await submitWaitlistEmail(email, message);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 502 });
   }

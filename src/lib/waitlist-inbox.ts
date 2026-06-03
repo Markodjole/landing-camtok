@@ -3,10 +3,14 @@ export const WAITLIST_INBOX =
   process.env.NEXT_PUBLIC_WAITLIST_TO_EMAIL?.trim() ||
   "marko.djordjevickg@gmail.com";
 
-export async function submitWaitlistEmail(email: string): Promise<
-  | { ok: true }
-  | { ok: false; error: string }
-> {
+export async function submitWaitlistEmail(
+  email: string,
+  note?: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const trimmedNote = note?.trim().slice(0, 500);
+  const bodyLines = [`New waitlist signup: ${email}`];
+  if (trimmedNote) bodyLines.push("", "Message:", trimmedNote);
+
   try {
     const res = await fetch(
       `https://formsubmit.co/ajax/${encodeURIComponent(WAITLIST_INBOX)}`,
@@ -21,7 +25,8 @@ export async function submitWaitlistEmail(email: string): Promise<
           _subject: "Crosstown waitlist signup",
           _captcha: "false",
           _template: "table",
-          message: `New waitlist signup: ${email}`,
+          message: bodyLines.join("\n"),
+          ...(trimmedNote ? { note: trimmedNote } : {}),
         }),
       },
     );
