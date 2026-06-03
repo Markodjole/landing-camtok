@@ -21,18 +21,18 @@ export default function HomePage() {
                 <span className="hero-badge-dot" aria-hidden />
                 Live city prediction game
               </div>
-              <div className="hero-headline-top">
+              <div className="hero-media-stack">
                 <div className="hero-line hero-line-video">
                   <HeroVideoBackground />
                   <h1 className="hero-title-top">Watch the drive.</h1>
                 </div>
-              </div>
-              <div className="hero-bottom-panel">
-                <HeroMapBackground />
-                <div className="hero-bottom-content">
-                  <h1 className="hero-title-bottom">
-                    <span>Call the next move.</span>
-                  </h1>
+                <div className="hero-bottom-panel">
+                  <HeroMapBackground />
+                  <div className="hero-bottom-content">
+                    <h1 className="hero-title-bottom">
+                      <span>Call the next move.</span>
+                    </h1>
+                  </div>
                 </div>
               </div>
               <p className="hero-lead">
