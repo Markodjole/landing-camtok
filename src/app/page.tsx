@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ContactForm, NavBar, WaitlistForm } from "@/components/landing-client";
 import { HeroMapBackground } from "@/components/HeroMapBackground";
+import { HeroVideoBackground } from "@/components/HeroVideoBackground";
 
 export default function HomePage() {
   return (
@@ -21,11 +22,17 @@ export default function HomePage() {
                 Live city prediction game
               </div>
               <div className="hero-headline-wrap">
-                <HeroMapBackground />
                 <h1>
-                  Watch the drive.
-                  <br />
-                  <span>Call the next move.</span>
+                  <span className="hero-line">
+                    <HeroVideoBackground />
+                    <span className="hero-line-text">Watch the drive.</span>
+                  </span>
+                  <span className="hero-line">
+                    <HeroMapBackground />
+                    <span className="hero-line-text">
+                      <span>Call the next move.</span>
+                    </span>
+                  </span>
                 </h1>
               </div>
               <p className="hero-lead">
