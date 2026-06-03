@@ -15,17 +15,19 @@ export default function HomePage() {
 
           <div className="container hero-content">
             <div className="hero-copy">
-              <HeroMapBackground />
               <div className="hero-copy-inner">
               <div className="hero-badge">
                 <span className="hero-badge-dot" aria-hidden />
                 Live city prediction game
               </div>
-              <h1>
-                Watch the drive.
-                <br />
-                <span>Call the next move.</span>
-              </h1>
+              <div className="hero-headline-wrap">
+                <HeroMapBackground />
+                <h1>
+                  Watch the drive.
+                  <br />
+                  <span>Call the next move.</span>
+                </h1>
+              </div>
               <p className="hero-lead">
                 Crosstown is live dashcam betting — real drivers, real streets,
                 real-time GPS. Watch the stream, read the map, and bet on the

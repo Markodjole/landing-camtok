@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-const ZOOM = 14;
+const ZOOM = 15;
 const TILE_PX = 256;
-const CENTER = { lat: 40.758, lng: -73.9855 }; // Manhattan — readable street grid
+const CENTER = { lat: 40.7589, lng: -73.9851 }; // Midtown — tight grid at small size
 const SUBDOMAINS = ["a", "b", "c", "d"] as const;
 const PURPLE_RGB = "108, 35, 237";
 const GREEN_RGB = "109, 255, 0";
@@ -46,19 +46,17 @@ function latLngToPixel(
 type PinDef = { lat: number; lng: number; kind: "bet" | "turn" | "zone" };
 
 const PINS: PinDef[] = [
-  { lat: 40.7612, lng: -73.992, kind: "turn" },
-  { lat: 40.7548, lng: -73.9785, kind: "zone" },
-  { lat: 40.7489, lng: -73.968, kind: "bet" },
-  { lat: 40.7655, lng: -73.973, kind: "turn" },
-  { lat: 40.752, lng: -73.987, kind: "zone" },
+  { lat: 40.7614, lng: -73.991, kind: "turn" },
+  { lat: 40.7562, lng: -73.982, kind: "zone" },
+  { lat: 40.7528, lng: -73.976, kind: "bet" },
+  { lat: 40.764, lng: -73.978, kind: "turn" },
 ];
 
 const ROUTE: Array<{ lat: number; lng: number }> = [
-  { lat: 40.7455, lng: -73.998 },
-  { lat: 40.751, lng: -73.988 },
-  { lat: 40.756, lng: -73.981 },
-  { lat: 40.761, lng: -73.975 },
-  { lat: 40.766, lng: -73.968 },
+  { lat: 40.7515, lng: -73.994 },
+  { lat: 40.7555, lng: -73.987 },
+  { lat: 40.7595, lng: -73.981 },
+  { lat: 40.7635, lng: -73.975 },
 ];
 
 /** Real OSM/Carto map tiles with slow drift — sits behind hero headline only. */
@@ -191,8 +189,8 @@ export function HeroMapBackground() {
 
       const routePx = ROUTE.map((p) => project(p.lat, p.lng, panX, panY));
       if (routePx.length >= 2) {
-        ctx.strokeStyle = `rgba(${PURPLE_RGB}, 0.9)`;
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = `rgba(${PURPLE_RGB}, 0.95)`;
+        ctx.lineWidth = 2.5;
         ctx.setLineDash([10, 8]);
         ctx.lineDashOffset = -t * 24;
         ctx.beginPath();
@@ -236,7 +234,7 @@ export function HeroMapBackground() {
   }, [tiles.originX, tiles.originY]);
 
   return (
-    <div ref={wrapRef} className="hero-map-bg" aria-hidden>
+    <div ref={wrapRef} className="hero-map-bg" aria-hidden data-label="Live map">
       <div
         ref={trackRef}
         className="hero-map-track"
