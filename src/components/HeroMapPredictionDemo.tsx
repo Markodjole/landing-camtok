@@ -37,7 +37,8 @@ const IDLE: DemoState = {
 };
 
 function phaseTurn(p: number): DemoState {
-  const successStart = 5;
+  const loadingStart = 4.5;
+  const successStart = 5.6;
 
   if (p < 3) {
     const count = (3 - Math.min(2, Math.floor(p))) as CountNum;
@@ -54,7 +55,7 @@ function phaseTurn(p: number): DemoState {
     };
   }
 
-  if (p < 4.5) {
+  if (p < loadingStart) {
     return {
       visible: true,
       variant: "turn",
@@ -100,7 +101,8 @@ function phaseTurn(p: number): DemoState {
 }
 
 function phasePin(p: number): DemoState {
-  const successStart = 4.5;
+  const loadingStart = 4;
+  const successStart = 5.1;
 
   if (p < 4) {
     return {
