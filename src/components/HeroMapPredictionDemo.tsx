@@ -19,12 +19,16 @@ const REWARD_AT = OK_AT + REWARD_DELAY_SEC;
 type DemoVariant = "turn" | "pin";
 type DemoPhase = "idle" | "countdown" | "call" | "loading" | "pin" | "success";
 type CountNum = 3 | 2 | 1;
+type PinCountNum = 34 | 33;
 
 type DemoState = {
   visible: boolean;
   variant: DemoVariant;
   phase: DemoPhase;
   count: CountNum | null;
+  pinSec: PinCountNum | null;
+  showPinLabel: boolean;
+  showPinButton: boolean;
   pressed: boolean;
   loading: boolean;
   showOk: boolean;
@@ -37,6 +41,9 @@ const IDLE: DemoState = {
   variant: "turn",
   phase: "idle",
   count: null,
+  pinSec: null,
+  showPinLabel: false,
+  showPinButton: false,
   pressed: false,
   loading: false,
   showOk: false,
@@ -55,6 +62,9 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
         variant,
         phase: "countdown",
         count,
+        pinSec: null,
+        showPinLabel: false,
+        showPinButton: false,
         pressed: false,
         loading: false,
         showOk: false,
@@ -62,11 +72,16 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
         rewardLabel,
       };
     }
+
+    const pinSec: PinCountNum | null = p < 1 ? 34 : p < 2 ? 33 : null;
     return {
       visible: true,
       variant,
-      phase: "pin",
+      phase: pinSec != null ? "countdown" : "pin",
       count: null,
+      pinSec,
+      showPinLabel: p >= 2,
+      showPinButton: false,
       pressed: false,
       loading: false,
       showOk: false,
@@ -82,6 +97,9 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
         variant,
         phase: "call",
         count: null,
+        pinSec: null,
+        showPinLabel: false,
+        showPinButton: false,
         pressed: p >= 4.35,
         loading: false,
         showOk: false,
@@ -94,6 +112,9 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       variant,
       phase: "pin",
       count: null,
+      pinSec: null,
+      showPinLabel: true,
+      showPinButton: true,
       pressed: p >= 4.35,
       loading: false,
       showOk: false,
@@ -108,6 +129,9 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       variant,
       phase: "loading",
       count: null,
+      pinSec: null,
+      showPinLabel: false,
+      showPinButton: false,
       pressed: false,
       loading: true,
       showOk: false,
@@ -122,6 +146,9 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       variant,
       phase: "success",
       count: null,
+      pinSec: null,
+      showPinLabel: false,
+      showPinButton: false,
       pressed: false,
       loading: false,
       showOk: p >= OK_AT,
@@ -168,6 +195,9 @@ export function HeroMapPredictionDemo() {
     variant,
     phase,
     count,
+    pinSec,
+    showPinLabel,
+    showPinButton,
     pressed,
     loading,
     showOk,
@@ -193,9 +223,36 @@ export function HeroMapPredictionDemo() {
         ))}
       </div>
 
-      <div className={`hero-map-demo-pin${phase === "pin" ? " is-on" : ""}`}>
-        <span className="hero-map-demo-pin-label">Time to pin</span>
-        <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
+      <div
+        className={`hero-map-demo-pin-countdown${pinSec != null ? " is-on" : ""}`}
+      >
+        {([34, 33] as const).map((n) => (
+          <span
+            key={n}
+            className={`hero-map-demo-num hero-map-demo-pin-sec${
+              pinSec === n ? " is-lit" : ""
+            }`}
+          >
+            {n}
+          </span>
+        ))}
+      </div>
+
+      <div
+        className={`hero-map-demo-pin${
+          variant === "pin" && (showPinLabel || showPinButton) ? " is-on" : ""
+        }`}
+      >
+        <span
+          className={`hero-map-demo-pin-label${showPinLabel ? " is-on" : ""}`}
+        >
+          Time to pin
+        </span>
+        <span
+          className={`hero-map-demo-btn${showPinButton ? " is-on" : ""}${
+            pressed ? " is-pressed" : ""
+          }`}
+        >
           <span className="hero-map-demo-btn-inner">
             <span className="hero-map-demo-btn-label">&lt; 34 sec</span>
           </span>
