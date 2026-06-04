@@ -15,6 +15,9 @@ const LOADING_END = 6.9;
 const SUCCESS_END = ANIM_LEN_SEC;
 const OK_AT = LOADING_END;
 const REWARD_AT = OK_AT + REWARD_DELAY_SEC;
+/** Pin: press as soon as 34→33→32 countdown ends (no idle beat on &lt; 32 sec). */
+const PIN_PRESS_AT = INTRO_END;
+const TURN_PRESS_AT = 4.35;
 
 type DemoVariant = "turn" | "pin";
 type DemoPhase = "idle" | "countdown" | "call" | "loading" | "pin" | "success";
@@ -95,7 +98,7 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
         count: null,
         pinBtnSec: null,
         showPinLabel: false,
-        pressed: p >= 4.35,
+        pressed: p >= TURN_PRESS_AT,
         loading: false,
         showOk: false,
         showReward: false,
@@ -109,7 +112,7 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       count: null,
       pinBtnSec: null,
       showPinLabel: true,
-      pressed: p >= 4.35,
+      pressed: p >= PIN_PRESS_AT,
       loading: false,
       showOk: false,
       showReward: false,
