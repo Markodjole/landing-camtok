@@ -30,7 +30,7 @@ export default function HomePage() {
                 />
               </div>
               <p className="hero-lead">
-                Crosstown is live POV prediction gaming. Real drivers, real
+                Crosstown is a live POV prediction game. Real drivers, real
                 streets, real-time GPS. Watch the stream, read the map, and call
                 the next turn, zone, or route before it happens.
               </p>
@@ -56,8 +56,8 @@ export default function HomePage() {
             <p className="section-label">How it works</p>
             <h2 className="section-title">Three steps. Zero scripts.</h2>
             <p className="section-lead">
-              Every round is tied to live GPS and a shared room timeline, so
-              calls lock before the outcome, and everyone sees the same truth.
+              Every round runs on live GPS and a shared room timeline: your call
+              locks before the outcome, and everyone sees the same result.
             </p>
 
             <div className="steps">
@@ -74,16 +74,16 @@ export default function HomePage() {
                 <h3>Pick your call</h3>
                 <p>
                   Left or right at the next junction? Which zone comes next?
-                  How many straight crossroads? Lock in your call before the
-                  window closes.
+                  How many crossroads before the next turn? Lock in your call
+                  before the window closes.
                 </p>
               </article>
               <article className="step">
                 <div className="step-num">3</div>
                 <h3>Win on the move</h3>
                 <p>
-                  The route reveals the answer. Correct predictions score the
-                  round. Skill beats luck when you read the city.
+                  The route reveals the answer. Correct calls earn points for
+                  the round. Skill beats luck when you read the city.
                 </p>
               </article>
             </div>
@@ -95,8 +95,8 @@ export default function HomePage() {
             <p className="section-label">What you predict</p>
             <h2 className="section-title">Calls built for the road</h2>
             <p className="section-lead">
-              Not random clips. Live route-state prompts generated from GPS,
-              grid zones, and upcoming decisions on the map.
+              Not random clips. Prompts come from live GPS, grid zones, and the
+              decisions ahead on the map.
             </p>
 
             <div className="call-grid">
@@ -126,7 +126,7 @@ export default function HomePage() {
                 </div>
                 <h3>Straight streak</h3>
                 <p>
-                  How many crossroads in a row without turning? Count the
+                  How many crossroads in a row before they turn? Count the
                   straight run.
                 </p>
               </article>
@@ -164,8 +164,8 @@ export default function HomePage() {
               <div className="feature">
                 <h3>Map + video overlay</h3>
                 <p>
-                  See pins and zone signs inside the stream. The city becomes
-                  the game board.
+                  See pins and zone signs on the stream. The city becomes the
+                  game board.
                 </p>
               </div>
             </div>
@@ -177,8 +177,8 @@ export default function HomePage() {
             <div className="cta-box">
               <h2>Be first on Crosstown</h2>
               <p>
-                We&apos;re opening live rooms city by city. Drop your email for
-                early access at playcrosstown.com.
+                We&apos;re opening live rooms city by city. Join the waitlist for
+                early access.
               </p>
               <WaitlistForm />
               <p className="cta-note">Drivers &amp; viewers welcome. No spam.</p>
@@ -189,7 +189,7 @@ export default function HomePage() {
         <section id="for-you" className="for-you-section">
           <div className="container">
             <p className="section-label">Who it&apos;s for</p>
-            <h2 className="section-title">Watch and predict, drive, or partner</h2>
+            <h2 className="section-title">Predict, drive, or partner</h2>
             <p className="section-lead">
               Crosstown is a live room around a real drive, not a highlight reel.
               Pick the lane that fits you.
@@ -199,15 +199,15 @@ export default function HomePage() {
                 <h3>Viewers</h3>
                 <p>
                   Follow the POV stream and map, read the next junction, and
-                  lock in your call before the window closes. Every outcome
-                  settles from GPS.
+                  lock in your call before the window closes. Every outcome is
+                  settled from GPS.
                 </p>
               </article>
               <article className="for-you-card">
                 <h3>Drivers</h3>
                 <p>
                   Stream from your phone, keep driving normally, and let viewers
-                  predict your next moves. Early rooms opening city by city.
+                  predict your next moves. Early rooms are opening city by city.
                 </p>
               </article>
               <article className="for-you-card">
