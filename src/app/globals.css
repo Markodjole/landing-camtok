@@ -389,6 +389,7 @@ button {
 }
 
 .hero-map-demo-countdown,
+.hero-map-demo-pin,
 .hero-map-demo-actions,
 .hero-map-demo-loading,
 .hero-map-demo-result {
@@ -434,17 +435,47 @@ button {
   transform: translateY(0);
 }
 
+.hero-map-demo-pin {
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.hero-map-demo-pin.is-on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-map-demo-pin-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+}
+
+.hero-map-demo-pin-timer {
+  font-size: 1.65rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+}
+
 .hero-map-demo-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
   min-width: 9.5rem;
   padding: 0.85rem 1.75rem;
   border-radius: 0.75rem;
   font-size: 1.05rem;
   font-weight: 500;
-  line-height: 1;
   letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.92);
   background: rgba(12, 12, 16, 0.55);
@@ -457,19 +488,28 @@ button {
     box-shadow 0.14s ease;
 }
 
+.hero-map-demo-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 1.125rem;
+}
+
 .hero-map-demo-btn-arrow {
   display: block;
   width: 1.125rem;
   height: 1.125rem;
-  flex-shrink: 0;
+  flex: 0 0 1.125rem;
   margin: 0;
   opacity: 0.92;
 }
 
 .hero-map-demo-btn-label {
-  display: block;
-  line-height: 1;
-  padding-top: 0.05em;
+  display: flex;
+  align-items: center;
+  line-height: 1.125rem;
+  height: 1.125rem;
 }
 
 .hero-map-demo-btn.is-pressed {
@@ -586,6 +626,10 @@ button {
     min-width: 8.25rem;
     padding: 0.75rem 1.5rem;
     font-size: 0.95rem;
+  }
+
+  .hero-map-demo-pin-timer {
+    font-size: 1.45rem;
   }
 
   .hero-map-demo-ok {
