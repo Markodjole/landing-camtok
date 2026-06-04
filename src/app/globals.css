@@ -389,7 +389,6 @@ button {
 }
 
 .hero-map-demo-countdown,
-.hero-map-demo-pin-countdown,
 .hero-map-demo-pin,
 .hero-map-demo-actions,
 .hero-map-demo-loading,
@@ -423,6 +422,10 @@ button {
   color: rgba(255, 255, 255, 0.95);
 }
 
+.hero-map-demo-countdown.is-on {
+  opacity: 1;
+}
+
 .hero-map-demo-actions {
   opacity: 0;
   transform: translateY(6px);
@@ -434,19 +437,6 @@ button {
 .hero-map-demo-actions.is-on {
   opacity: 1;
   transform: translateY(0);
-}
-
-.hero-map-demo-pin-countdown {
-  opacity: 0;
-}
-
-.hero-map-demo-pin-countdown.is-on {
-  opacity: 1;
-}
-
-.hero-map-demo-pin-sec {
-  font-size: 2.35rem;
-  letter-spacing: -0.02em;
 }
 
 .hero-map-demo-pin {
@@ -477,21 +467,6 @@ button {
 
 .hero-map-demo-pin-label.is-on {
   opacity: 1;
-}
-
-.hero-map-demo-pin .hero-map-demo-btn {
-  opacity: 0;
-  transform: translateY(4px) scale(0.96);
-  pointer-events: none;
-  transition:
-    opacity 0.22s ease,
-    transform 0.22s ease;
-}
-
-.hero-map-demo-pin .hero-map-demo-btn.is-on {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: none;
 }
 
 .hero-map-demo-btn {
@@ -624,22 +599,24 @@ button {
 }
 
 .hero-map-demo-reward {
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: 0.9375rem;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.04em;
-  color: rgba(109, 255, 0, 0.88);
-  text-shadow: 0 0 12px rgba(109, 255, 0, 0.25);
+  letter-spacing: 0.05em;
+  color: rgba(109, 255, 0, 0.95);
+  text-shadow:
+    0 0 14px rgba(109, 255, 0, 0.35),
+    0 2px 12px rgba(0, 0, 0, 0.45);
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateY(8px) scale(0.96);
   transition:
-    opacity 0.32s ease,
-    transform 0.32s ease;
+    opacity 0.22s ease,
+    transform 0.22s ease;
 }
 
 .hero-map-demo-reward.is-on {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 @media (max-width: 899px) {
@@ -649,10 +626,6 @@ button {
 
   .hero-map-demo-num {
     font-size: 2.35rem;
-  }
-
-  .hero-map-demo-pin-sec {
-    font-size: 2.1rem;
   }
 
   .hero-map-demo-btn {
@@ -667,7 +640,7 @@ button {
   }
 
   .hero-map-demo-reward {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
   }
 }
 

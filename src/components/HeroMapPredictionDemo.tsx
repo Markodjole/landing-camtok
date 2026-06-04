@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 /** Self-timed loop — not tied to map video playback. */
 const LOOP_SEC = 12;
 const PAUSE_SEC = 3.5;
-const REWARD_DELAY_SEC = 1.5;
+const REWARD_DELAY_SEC = 0.45;
 const ANIM_LEN_SEC = LOOP_SEC - PAUSE_SEC;
 
 /** Shared segment boundaries (seconds into the active window). */
@@ -19,16 +19,15 @@ const REWARD_AT = OK_AT + REWARD_DELAY_SEC;
 type DemoVariant = "turn" | "pin";
 type DemoPhase = "idle" | "countdown" | "call" | "loading" | "pin" | "success";
 type CountNum = 3 | 2 | 1;
-type PinCountNum = 34 | 33;
+type PinBtnSec = 34 | 33;
 
 type DemoState = {
   visible: boolean;
   variant: DemoVariant;
   phase: DemoPhase;
   count: CountNum | null;
-  pinSec: PinCountNum | null;
+  pinBtnSec: PinBtnSec | null;
   showPinLabel: boolean;
-  showPinButton: boolean;
   pressed: boolean;
   loading: boolean;
   showOk: boolean;
@@ -41,9 +40,8 @@ const IDLE: DemoState = {
   variant: "turn",
   phase: "idle",
   count: null,
-  pinSec: null,
+  pinBtnSec: null,
   showPinLabel: false,
-  showPinButton: false,
   pressed: false,
   loading: false,
   showOk: false,
@@ -62,9 +60,8 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
         variant,
         phase: "countdown",
         count,
-        pinSec: null,
+        pinBtnSec: null,
         showPinLabel: false,
-        showPinButton: false,
         pressed: false,
         loading: false,
         showOk: false,
@@ -73,15 +70,14 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       };
     }
 
-    const pinSec: PinCountNum | null = p < 1 ? 34 : p < 2 ? 33 : null;
+    const pinBtnSec: PinBtnSec | null = p < 1 ? 34 : p < 2 ? 33 : null;
     return {
       visible: true,
       variant,
-      phase: pinSec != null ? "countdown" : "pin",
+      phase: "pin",
       count: null,
-      pinSec,
+      pinBtnSec,
       showPinLabel: p >= 2,
-      showPinButton: false,
       pressed: false,
       loading: false,
       showOk: false,
@@ -97,9 +93,8 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
         variant,
         phase: "call",
         count: null,
-        pinSec: null,
+        pinBtnSec: null,
         showPinLabel: false,
-        showPinButton: false,
         pressed: p >= 4.35,
         loading: false,
         showOk: false,
@@ -112,9 +107,8 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       variant,
       phase: "pin",
       count: null,
-      pinSec: null,
+      pinBtnSec: null,
       showPinLabel: true,
-      showPinButton: true,
       pressed: p >= 4.35,
       loading: false,
       showOk: false,
@@ -129,9 +123,8 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       variant,
       phase: "loading",
       count: null,
-      pinSec: null,
+      pinBtnSec: null,
       showPinLabel: false,
-      showPinButton: false,
       pressed: false,
       loading: true,
       showOk: false,
@@ -146,9 +139,8 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       variant,
       phase: "success",
       count: null,
-      pinSec: null,
+      pinBtnSec: null,
       showPinLabel: false,
-      showPinButton: false,
       pressed: false,
       loading: false,
       showOk: p >= OK_AT,
@@ -170,6 +162,11 @@ function phaseFromLoopTime(loopT: number): DemoState {
   const variant: DemoVariant = cycle % 2 === 0 ? "turn" : "pin";
 
   return phaseForVariant(p, variant);
+}
+
+function pinButtonLabel(pinBtnSec: PinBtnSec | null): string {
+  if (pinBtnSec != null) return `< ${pinBtnSec} sec`;
+  return "< 34 sec";
 }
 
 /** Map call demo on its own 12s loop. Decorative only. */
@@ -195,15 +192,16 @@ export function HeroMapPredictionDemo() {
     variant,
     phase,
     count,
-    pinSec,
+    pinBtnSec,
     showPinLabel,
-    showPinButton,
     pressed,
     loading,
     showOk,
     showReward,
     rewardLabel,
   } = state;
+
+  const pinOn = variant === "pin" && (phase === "pin" || phase === "countdown");
 
   return (
     <div
@@ -212,7 +210,9 @@ export function HeroMapPredictionDemo() {
       data-variant={variant}
       aria-hidden
     >
-      <div className="hero-map-demo-countdown">
+      <div
+        className={`hero-map-demo-countdown${count != null ? " is-on" : ""}`}
+      >
         {([3, 2, 1] as const).map((n) => (
           <span
             key={n}
@@ -223,38 +223,17 @@ export function HeroMapPredictionDemo() {
         ))}
       </div>
 
-      <div
-        className={`hero-map-demo-pin-countdown${pinSec != null ? " is-on" : ""}`}
-      >
-        {([34, 33] as const).map((n) => (
-          <span
-            key={n}
-            className={`hero-map-demo-num hero-map-demo-pin-sec${
-              pinSec === n ? " is-lit" : ""
-            }`}
-          >
-            {n}
-          </span>
-        ))}
-      </div>
-
-      <div
-        className={`hero-map-demo-pin${
-          variant === "pin" && (showPinLabel || showPinButton) ? " is-on" : ""
-        }`}
-      >
+      <div className={`hero-map-demo-pin${pinOn ? " is-on" : ""}`}>
         <span
           className={`hero-map-demo-pin-label${showPinLabel ? " is-on" : ""}`}
         >
           Time to pin
         </span>
-        <span
-          className={`hero-map-demo-btn${showPinButton ? " is-on" : ""}${
-            pressed ? " is-pressed" : ""
-          }`}
-        >
+        <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
           <span className="hero-map-demo-btn-inner">
-            <span className="hero-map-demo-btn-label">&lt; 34 sec</span>
+            <span className="hero-map-demo-btn-label">
+              {pinButtonLabel(pinBtnSec)}
+            </span>
           </span>
         </span>
       </div>
