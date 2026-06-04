@@ -4,9 +4,17 @@ import { useEffect, useState } from "react";
 
 /** Self-timed loop — not tied to map video playback. */
 const LOOP_SEC = 12;
-const PAUSE_SEC = 5;
+const PAUSE_SEC = 3.5;
 const REWARD_DELAY_SEC = 1.5;
 const ANIM_LEN_SEC = LOOP_SEC - PAUSE_SEC;
+
+/** Shared segment boundaries (seconds into the active window). */
+const INTRO_END = 3;
+const ACTION_END = 5;
+const LOADING_END = 6.9;
+const SUCCESS_END = ANIM_LEN_SEC;
+const OK_AT = LOADING_END;
+const REWARD_AT = OK_AT + REWARD_DELAY_SEC;
 
 type DemoVariant = "turn" | "pin";
 type DemoPhase = "idle" | "countdown" | "call" | "loading" | "pin" | "success";
@@ -36,113 +44,89 @@ const IDLE: DemoState = {
   rewardLabel: "",
 };
 
-function phaseTurn(p: number): DemoState {
-  const loadingStart = 4.5;
-  const successStart = 5.6;
+function phaseForVariant(p: number, variant: DemoVariant): DemoState {
+  const rewardLabel = variant === "turn" ? "+5 tokens" : "+10 tokens";
 
-  if (p < 3) {
-    const count = (3 - Math.min(2, Math.floor(p))) as CountNum;
+  if (p < INTRO_END) {
+    if (variant === "turn") {
+      const count = (3 - Math.min(2, Math.floor(p))) as CountNum;
+      return {
+        visible: true,
+        variant,
+        phase: "countdown",
+        count,
+        pressed: false,
+        loading: false,
+        showOk: false,
+        showReward: false,
+        rewardLabel,
+      };
+    }
     return {
       visible: true,
-      variant: "turn",
-      phase: "countdown",
-      count,
-      pressed: false,
-      loading: false,
-      showOk: false,
-      showReward: false,
-      rewardLabel: "+5 tokens",
-    };
-  }
-
-  if (p < loadingStart) {
-    return {
-      visible: true,
-      variant: "turn",
-      phase: "call",
-      count: null,
-      pressed: p >= 3.85,
-      loading: false,
-      showOk: false,
-      showReward: false,
-      rewardLabel: "+5 tokens",
-    };
-  }
-
-  if (p < successStart) {
-    return {
-      visible: true,
-      variant: "turn",
-      phase: "loading",
-      count: null,
-      pressed: false,
-      loading: true,
-      showOk: false,
-      showReward: false,
-      rewardLabel: "+5 tokens",
-    };
-  }
-
-  if (p < ANIM_LEN_SEC) {
-    return {
-      visible: true,
-      variant: "turn",
-      phase: "success",
-      count: null,
-      pressed: false,
-      loading: false,
-      showOk: true,
-      showReward: p >= successStart + REWARD_DELAY_SEC,
-      rewardLabel: "+5 tokens",
-    };
-  }
-
-  return IDLE;
-}
-
-function phasePin(p: number): DemoState {
-  const loadingStart = 4;
-  const successStart = 5.1;
-
-  if (p < 4) {
-    return {
-      visible: true,
-      variant: "pin",
+      variant,
       phase: "pin",
       count: null,
-      pressed: p >= 3.35,
+      pressed: false,
       loading: false,
       showOk: false,
       showReward: false,
-      rewardLabel: "+10 tokens",
+      rewardLabel,
     };
   }
 
-  if (p < successStart) {
+  if (p < ACTION_END) {
+    if (variant === "turn") {
+      return {
+        visible: true,
+        variant,
+        phase: "call",
+        count: null,
+        pressed: p >= 4.35,
+        loading: false,
+        showOk: false,
+        showReward: false,
+        rewardLabel,
+      };
+    }
     return {
       visible: true,
-      variant: "pin",
+      variant,
+      phase: "pin",
+      count: null,
+      pressed: p >= 4.35,
+      loading: false,
+      showOk: false,
+      showReward: false,
+      rewardLabel,
+    };
+  }
+
+  if (p < LOADING_END) {
+    return {
+      visible: true,
+      variant,
       phase: "loading",
       count: null,
       pressed: false,
       loading: true,
       showOk: false,
       showReward: false,
-      rewardLabel: "+10 tokens",
+      rewardLabel,
     };
   }
 
-  if (p < ANIM_LEN_SEC) {
+  if (p < SUCCESS_END) {
     return {
       visible: true,
-      variant: "pin",
+      variant,
       phase: "success",
       count: null,
       pressed: false,
       loading: false,
-      showOk: true,
-      showReward: p >= successStart + REWARD_DELAY_SEC,
-      rewardLabel: "+10 tokens",
+      showOk: p >= OK_AT,
+      showReward: p >= REWARD_AT,
+      rewardLabel,
     };
   }
 
@@ -158,7 +142,7 @@ function phaseFromLoopTime(loopT: number): DemoState {
   const cycle = Math.floor(loopT / LOOP_SEC);
   const variant: DemoVariant = cycle % 2 === 0 ? "turn" : "pin";
 
-  return variant === "turn" ? phaseTurn(p) : phasePin(p);
+  return phaseForVariant(p, variant);
 }
 
 /** Map call demo on its own 12s loop. Decorative only. */
