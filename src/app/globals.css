@@ -438,12 +438,13 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   min-width: 9.5rem;
   padding: 0.85rem 1.75rem;
   border-radius: 0.75rem;
   font-size: 1.05rem;
   font-weight: 500;
+  line-height: 1;
   letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.92);
   background: rgba(12, 12, 16, 0.55);
@@ -457,10 +458,18 @@ button {
 }
 
 .hero-map-demo-btn-arrow {
-  width: 1.1rem;
-  height: 1.1rem;
+  display: block;
+  width: 1.125rem;
+  height: 1.125rem;
   flex-shrink: 0;
-  opacity: 0.9;
+  margin: 0;
+  opacity: 0.92;
+}
+
+.hero-map-demo-btn-label {
+  display: block;
+  line-height: 1;
+  padding-top: 0.05em;
 }
 
 .hero-map-demo-btn.is-pressed {
@@ -511,6 +520,16 @@ button {
   width: 2.75rem;
   height: 2.75rem;
   color: var(--green);
+  opacity: 0;
+  transform: scale(0.88);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+.hero-map-demo-ok.is-on {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .hero-map-demo-ok-ring {
@@ -527,28 +546,29 @@ button {
   transition: stroke-dashoffset 0.32s ease 0.08s;
 }
 
-.hero-map-demo-result.is-on .hero-map-demo-ok-ring {
+.hero-map-demo-ok.is-on .hero-map-demo-ok-ring {
   opacity: 1;
 }
 
-.hero-map-demo-result.is-on .hero-map-demo-ok-mark {
+.hero-map-demo-ok.is-on .hero-map-demo-ok-mark {
   stroke-dashoffset: 0;
 }
 
 .hero-map-demo-reward {
   font-size: 0.8125rem;
   font-weight: 500;
+  line-height: 1;
   letter-spacing: 0.04em;
   color: rgba(109, 255, 0, 0.88);
   text-shadow: 0 0 12px rgba(109, 255, 0, 0.25);
   opacity: 0;
-  transform: translateY(4px);
+  transform: translateY(6px);
   transition:
-    opacity 0.3s ease 0.2s,
-    transform 0.3s ease 0.2s;
+    opacity 0.32s ease,
+    transform 0.32s ease;
 }
 
-.hero-map-demo-result.is-on .hero-map-demo-reward {
+.hero-map-demo-reward.is-on {
   opacity: 1;
   transform: translateY(0);
 }

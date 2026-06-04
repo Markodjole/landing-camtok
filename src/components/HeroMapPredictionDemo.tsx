@@ -3,7 +3,8 @@
 import { useEffect, useState, type RefObject } from "react";
 
 const LOOP_SEC = 12;
-const ANIM_START_SEC = 6;
+const ANIM_START_SEC = 5;
+const REWARD_DELAY_SEC = 1.5;
 
 type DemoPhase = "idle" | "countdown" | "call" | "loading" | "success";
 type CountNum = 3 | 2 | 1;
@@ -19,6 +20,7 @@ function phaseFromTime(loopT: number): {
   pressed: boolean;
   loading: boolean;
   showOk: boolean;
+  showReward: boolean;
 } {
   if (loopT < ANIM_START_SEC) {
     return {
@@ -28,10 +30,12 @@ function phaseFromTime(loopT: number): {
       pressed: false,
       loading: false,
       showOk: false,
+      showReward: false,
     };
   }
 
   const p = loopT - ANIM_START_SEC;
+  const successStart = 4.5;
   const animEnd = LOOP_SEC - ANIM_START_SEC - 0.06;
 
   if (p >= animEnd) {
@@ -42,6 +46,7 @@ function phaseFromTime(loopT: number): {
       pressed: false,
       loading: false,
       showOk: false,
+      showReward: false,
     };
   }
 
@@ -54,21 +59,23 @@ function phaseFromTime(loopT: number): {
       pressed: false,
       loading: false,
       showOk: false,
+      showReward: false,
     };
   }
 
-  if (p < 4.65) {
+  if (p < 4.25) {
     return {
       visible: true,
       phase: "call",
       count: null,
-      pressed: p >= 4.1,
+      pressed: p >= 3.75,
       loading: false,
       showOk: false,
+      showReward: false,
     };
   }
 
-  if (p < 5.15) {
+  if (p < successStart) {
     return {
       visible: true,
       phase: "loading",
@@ -76,6 +83,7 @@ function phaseFromTime(loopT: number): {
       pressed: false,
       loading: true,
       showOk: false,
+      showReward: false,
     };
   }
 
@@ -86,6 +94,7 @@ function phaseFromTime(loopT: number): {
     pressed: false,
     loading: false,
     showOk: true,
+    showReward: p >= successStart + REWARD_DELAY_SEC,
   };
 }
 
@@ -97,6 +106,7 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
   const [pressed, setPressed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showOk, setShowOk] = useState(false);
+  const [showReward, setShowReward] = useState(false);
 
   useEffect(() => {
     let raf = 0;
@@ -110,6 +120,7 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
       setPressed(next.pressed);
       setLoading(next.loading);
       setShowOk(next.showOk);
+      setShowReward(next.showReward);
     };
 
     const tick = () => {
@@ -163,7 +174,7 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
               strokeLinejoin="round"
             />
           </svg>
-          Turn left
+          <span className="hero-map-demo-btn-label">Turn left</span>
         </span>
       </div>
 
@@ -172,7 +183,10 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
       </div>
 
       <div className={`hero-map-demo-result${showOk ? " is-on" : ""}`} aria-hidden>
-        <svg viewBox="0 0 52 52" className="hero-map-demo-ok">
+        <svg
+          viewBox="0 0 52 52"
+          className={`hero-map-demo-ok${showOk ? " is-on" : ""}`}
+        >
           <circle className="hero-map-demo-ok-ring" cx="26" cy="26" r="22" />
           <path
             className="hero-map-demo-ok-mark"
@@ -184,7 +198,9 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
             strokeLinejoin="round"
           />
         </svg>
-        <span className="hero-map-demo-reward">+5 tokens</span>
+        <span className={`hero-map-demo-reward${showReward ? " is-on" : ""}`}>
+          +5 tokens
+        </span>
       </div>
     </div>
   );
