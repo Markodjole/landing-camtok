@@ -108,7 +108,7 @@ function phasePin(p: number): DemoState {
       variant: "pin",
       phase: "pin",
       count: null,
-      pressed: false,
+      pressed: p >= 3.35,
       loading: false,
       showOk: false,
       showReward: false,
@@ -209,22 +209,19 @@ export function HeroMapPredictionDemo() {
 
       <div className={`hero-map-demo-pin${phase === "pin" ? " is-on" : ""}`}>
         <span className="hero-map-demo-pin-label">Time to pin</span>
-        <span className="hero-map-demo-pin-timer">&lt; 34 sec</span>
+        <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
+          <span className="hero-map-demo-btn-inner">
+            <span className="hero-map-demo-btn-label">&lt; 34 sec</span>
+          </span>
+        </span>
       </div>
 
       <div className={`hero-map-demo-actions${phase === "call" ? " is-on" : ""}`}>
         <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
           <span className="hero-map-demo-btn-inner">
-            <svg viewBox="0 0 24 24" className="hero-map-demo-btn-arrow" aria-hidden>
-              <path
-                d="M14 7l-5 5 5 5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <span className="hero-map-demo-call-icon" aria-hidden>
+              ↰
+            </span>
             <span className="hero-map-demo-btn-label">Turn left</span>
           </span>
         </span>
