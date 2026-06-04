@@ -22,7 +22,7 @@ export function HeroBottomPanel({ title }: HeroBottomPanelProps) {
           className="hero-map-media"
         />
       </div>
-      <HeroMapPredictionDemo videoRef={videoRef} />
+      <HeroMapPredictionDemo />
       <div className="hero-bottom-content">
         <h1 className="hero-title-bottom">{title}</h1>
       </div>

@@ -1,19 +1,17 @@
 "use client";
 
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState } from "react";
 
+/** Self-timed loop — not tied to map video playback. */
 const LOOP_SEC = 12;
-const ANIM_START_SEC = 5;
+const PAUSE_SEC = 5;
 const REWARD_DELAY_SEC = 1.5;
+const ANIM_LEN_SEC = LOOP_SEC - PAUSE_SEC;
 
 type DemoPhase = "idle" | "countdown" | "call" | "loading" | "success";
 type CountNum = 3 | 2 | 1;
 
-type HeroMapPredictionDemoProps = {
-  videoRef: RefObject<HTMLVideoElement | null>;
-};
-
-function phaseFromTime(loopT: number): {
+function phaseFromLoopTime(loopT: number): {
   visible: boolean;
   phase: DemoPhase;
   count: CountNum | null;
@@ -22,7 +20,9 @@ function phaseFromTime(loopT: number): {
   showOk: boolean;
   showReward: boolean;
 } {
-  if (loopT < ANIM_START_SEC) {
+  const t = loopT % LOOP_SEC;
+
+  if (t < PAUSE_SEC) {
     return {
       visible: false,
       phase: "idle",
@@ -34,21 +34,8 @@ function phaseFromTime(loopT: number): {
     };
   }
 
-  const p = loopT - ANIM_START_SEC;
-  const successStart = 4.5;
-  const animEnd = LOOP_SEC - ANIM_START_SEC - 0.06;
-
-  if (p >= animEnd) {
-    return {
-      visible: false,
-      phase: "idle",
-      count: null,
-      pressed: false,
-      loading: false,
-      showOk: false,
-      showReward: false,
-    };
-  }
+  const p = t - PAUSE_SEC;
+  const successStart = 5;
 
   if (p < 3) {
     const count = (3 - Math.min(2, Math.floor(p))) as CountNum;
@@ -63,12 +50,12 @@ function phaseFromTime(loopT: number): {
     };
   }
 
-  if (p < 4.25) {
+  if (p < 4.5) {
     return {
       visible: true,
       phase: "call",
       count: null,
-      pressed: p >= 3.75,
+      pressed: p >= 3.85,
       loading: false,
       showOk: false,
       showReward: false,
@@ -87,19 +74,31 @@ function phaseFromTime(loopT: number): {
     };
   }
 
+  if (p < ANIM_LEN_SEC) {
+    return {
+      visible: true,
+      phase: "success",
+      count: null,
+      pressed: false,
+      loading: false,
+      showOk: true,
+      showReward: p >= successStart + REWARD_DELAY_SEC,
+    };
+  }
+
   return {
-    visible: true,
-    phase: "success",
+    visible: false,
+    phase: "idle",
     count: null,
     pressed: false,
     loading: false,
-    showOk: true,
-    showReward: p >= successStart + REWARD_DELAY_SEC,
+    showOk: false,
+    showReward: false,
   };
 }
 
-/** Map call demo synced once per video loop. Decorative only. */
-export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) {
+/** Map call demo on its own 12s loop. Decorative only. */
+export function HeroMapPredictionDemo() {
   const [visible, setVisible] = useState(false);
   const [phase, setPhase] = useState<DemoPhase>("idle");
   const [count, setCount] = useState<CountNum | null>(null);
@@ -109,11 +108,12 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
   const [showReward, setShowReward] = useState(false);
 
   useEffect(() => {
+    const startedAt = performance.now();
     let raf = 0;
-    let fallbackStart = performance.now();
 
-    const apply = (loopT: number) => {
-      const next = phaseFromTime(loopT);
+    const tick = () => {
+      const loopT = (performance.now() - startedAt) / 1000;
+      const next = phaseFromLoopTime(loopT);
       setVisible(next.visible);
       setPhase(next.phase);
       setCount(next.count);
@@ -121,29 +121,12 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
       setLoading(next.loading);
       setShowOk(next.showOk);
       setShowReward(next.showReward);
-    };
-
-    const tick = () => {
-      const video = videoRef.current;
-
-      if (video && video.readyState >= 2 && !video.paused && video.currentTime > 0.05) {
-        const dur = video.duration;
-        const loop =
-          Number.isFinite(dur) && dur > 0
-            ? video.currentTime % dur
-            : video.currentTime % LOOP_SEC;
-        apply(loop);
-      } else {
-        const elapsed = (performance.now() - fallbackStart) / 1000;
-        apply(elapsed % LOOP_SEC);
-      }
-
       raf = requestAnimationFrame(tick);
     };
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [videoRef]);
+  }, []);
 
   return (
     <div
