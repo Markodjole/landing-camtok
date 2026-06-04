@@ -57,18 +57,18 @@ function phaseFromTime(loopT: number): {
     };
   }
 
-  if (p < 5.25) {
+  if (p < 4.65) {
     return {
       visible: true,
       phase: "call",
       count: null,
-      pressed: p >= 4.35,
+      pressed: p >= 4.1,
       loading: false,
       showOk: false,
     };
   }
 
-  if (p < 5.85) {
+  if (p < 5.15) {
     return {
       visible: true,
       phase: "loading",
@@ -153,6 +153,16 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
 
       <div className={`hero-map-demo-actions${phase === "call" ? " is-on" : ""}`}>
         <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
+          <svg viewBox="0 0 24 24" className="hero-map-demo-btn-arrow" aria-hidden>
+            <path
+              d="M14 7l-5 5 5 5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           Turn left
         </span>
       </div>
@@ -161,22 +171,21 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
         <span className="hero-map-demo-spinner" />
       </div>
 
-      <svg
-        viewBox="0 0 52 52"
-        className={`hero-map-demo-ok${showOk ? " is-on" : ""}`}
-        aria-hidden
-      >
-        <circle className="hero-map-demo-ok-ring" cx="26" cy="26" r="22" />
-        <path
-          className="hero-map-demo-ok-mark"
-          d="M14 27l8 8 16-18"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <div className={`hero-map-demo-result${showOk ? " is-on" : ""}`} aria-hidden>
+        <svg viewBox="0 0 52 52" className="hero-map-demo-ok">
+          <circle className="hero-map-demo-ok-ring" cx="26" cy="26" r="22" />
+          <path
+            className="hero-map-demo-ok-mark"
+            d="M14 27l8 8 16-18"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span className="hero-map-demo-reward">+5 tokens</span>
+      </div>
     </div>
   );
 }

@@ -391,7 +391,7 @@ button {
 .hero-map-demo-countdown,
 .hero-map-demo-actions,
 .hero-map-demo-loading,
-.hero-map-demo-ok {
+.hero-map-demo-result {
   position: absolute;
   display: grid;
   place-items: center;
@@ -438,6 +438,7 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.45rem;
   min-width: 9.5rem;
   padding: 0.85rem 1.75rem;
   border-radius: 0.75rem;
@@ -453,6 +454,13 @@ button {
     background 0.14s ease,
     border-color 0.14s ease,
     box-shadow 0.14s ease;
+}
+
+.hero-map-demo-btn-arrow {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  opacity: 0.9;
 }
 
 .hero-map-demo-btn.is-pressed {
@@ -484,15 +492,25 @@ button {
   }
 }
 
+.hero-map-demo-result {
+  flex-direction: column;
+  gap: 0.45rem;
+  opacity: 0;
+  transform: translateY(4px) scale(0.94);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+.hero-map-demo-result.is-on {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 .hero-map-demo-ok {
   width: 2.75rem;
   height: 2.75rem;
   color: var(--green);
-  opacity: 0;
-  transform: scale(0.88);
-  transition:
-    opacity 0.28s ease,
-    transform 0.28s ease;
 }
 
 .hero-map-demo-ok-ring {
@@ -506,20 +524,33 @@ button {
 .hero-map-demo-ok-mark {
   stroke-dasharray: 42;
   stroke-dashoffset: 42;
-  transition: stroke-dashoffset 0.32s ease 0.1s;
+  transition: stroke-dashoffset 0.32s ease 0.08s;
 }
 
-.hero-map-demo-ok.is-on {
-  opacity: 0.9;
-  transform: scale(1);
-}
-
-.hero-map-demo-ok.is-on .hero-map-demo-ok-ring {
+.hero-map-demo-result.is-on .hero-map-demo-ok-ring {
   opacity: 1;
 }
 
-.hero-map-demo-ok.is-on .hero-map-demo-ok-mark {
+.hero-map-demo-result.is-on .hero-map-demo-ok-mark {
   stroke-dashoffset: 0;
+}
+
+.hero-map-demo-reward {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(109, 255, 0, 0.88);
+  text-shadow: 0 0 12px rgba(109, 255, 0, 0.25);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.3s ease 0.2s,
+    transform 0.3s ease 0.2s;
+}
+
+.hero-map-demo-result.is-on .hero-map-demo-reward {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (max-width: 899px) {
@@ -540,6 +571,10 @@ button {
   .hero-map-demo-ok {
     width: 2.35rem;
     height: 2.35rem;
+  }
+
+  .hero-map-demo-reward {
+    font-size: 0.75rem;
   }
 }
 
