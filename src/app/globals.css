@@ -526,7 +526,7 @@ button {
   border-radius: 50%;
   border: 2.5px solid rgba(255, 255, 255, 0.15);
   border-top-color: rgba(109, 255, 0, 0.75);
-  animation: hero-map-demo-spin 0.75s linear infinite;
+  animation: hero-map-demo-spin 0.45s linear infinite;
 }
 
 @keyframes hero-map-demo-spin {
