@@ -19,7 +19,7 @@ const REWARD_AT = OK_AT + REWARD_DELAY_SEC;
 type DemoVariant = "turn" | "pin";
 type DemoPhase = "idle" | "countdown" | "call" | "loading" | "pin" | "success";
 type CountNum = 3 | 2 | 1;
-type PinBtnSec = 34 | 33;
+type PinBtnSec = 34 | 33 | 32;
 
 type DemoState = {
   visible: boolean;
@@ -70,14 +70,14 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       };
     }
 
-    const pinBtnSec: PinBtnSec | null = p < 1 ? 34 : p < 2 ? 33 : null;
+    const pinBtnSec: PinBtnSec | null = p < 1 ? 34 : p < 2 ? 33 : p < 3 ? 32 : null;
     return {
       visible: true,
       variant,
       phase: "pin",
       count: null,
       pinBtnSec,
-      showPinLabel: p >= 2,
+      showPinLabel: false,
       pressed: false,
       loading: false,
       showOk: false,
@@ -166,7 +166,7 @@ function phaseFromLoopTime(loopT: number): DemoState {
 
 function pinButtonLabel(pinBtnSec: PinBtnSec | null): string {
   if (pinBtnSec != null) return `< ${pinBtnSec} sec`;
-  return "< 34 sec";
+  return "< 32 sec";
 }
 
 /** Map call demo on its own 12s loop. Decorative only. */

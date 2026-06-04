@@ -384,7 +384,7 @@ button {
 }
 
 .hero-map-demo.is-visible {
-  opacity: 1;
+  opacity: 0.88;
   visibility: visible;
 }
 
@@ -401,25 +401,31 @@ button {
   transition: opacity 0.22s ease;
 }
 
+.hero-map-demo-num,
+.hero-map-demo-btn,
+.hero-map-demo-btn-label,
+.hero-map-demo-pin-label {
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
 .hero-map-demo-num {
   position: absolute;
-  font-size: 2.75rem;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.18);
   opacity: 0;
-  transform: scale(0.88);
+  transform: scale(0.98);
   transition:
     opacity 0.25s ease,
     transform 0.25s ease,
     color 0.25s ease;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
 }
 
 .hero-map-demo-num.is-lit {
-  opacity: 0.92;
+  opacity: 0.72;
   transform: scale(1);
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .hero-map-demo-countdown.is-on {
@@ -456,17 +462,14 @@ button {
 }
 
 .hero-map-demo-pin-label {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.72);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   opacity: 0;
   transition: opacity 0.22s ease;
 }
 
 .hero-map-demo-pin-label.is-on {
-  opacity: 1;
+  opacity: 0.78;
 }
 
 .hero-map-demo-btn {
@@ -476,10 +479,7 @@ button {
   min-width: 9.5rem;
   padding: 0.85rem 1.75rem;
   border-radius: 0.75rem;
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.78);
   background: rgba(12, 12, 16, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
@@ -599,11 +599,11 @@ button {
 }
 
 .hero-map-demo-reward {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.05em;
-  color: rgba(109, 255, 0, 0.95);
+  letter-spacing: 0.01em;
+  color: rgba(109, 255, 0, 0.78);
   text-shadow:
     0 0 14px rgba(109, 255, 0, 0.35),
     0 2px 12px rgba(0, 0, 0, 0.45);
@@ -615,7 +615,7 @@ button {
 }
 
 .hero-map-demo-reward.is-on {
-  opacity: 1;
+  opacity: 0.82;
   transform: translateY(0) scale(1);
 }
 
@@ -624,14 +624,17 @@ button {
     padding-top: 2.35rem;
   }
 
-  .hero-map-demo-num {
-    font-size: 2.35rem;
+  .hero-map-demo-num,
+  .hero-map-demo-btn,
+  .hero-map-demo-btn-label,
+  .hero-map-demo-pin-label,
+  .hero-map-demo-reward {
+    font-size: 0.95rem;
   }
 
   .hero-map-demo-btn {
     min-width: 8.25rem;
     padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
   }
 
   .hero-map-demo-ok {
@@ -639,9 +642,6 @@ button {
     height: 2.35rem;
   }
 
-  .hero-map-demo-reward {
-    font-size: 0.8125rem;
-  }
 }
 
 
