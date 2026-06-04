@@ -16,7 +16,7 @@ function phaseFromTime(loopT: number): {
   visible: boolean;
   phase: DemoPhase;
   count: CountNum | null;
-  callLit: boolean;
+  pressed: boolean;
   loading: boolean;
   showOk: boolean;
 } {
@@ -25,7 +25,7 @@ function phaseFromTime(loopT: number): {
       visible: false,
       phase: "idle",
       count: null,
-      callLit: false,
+      pressed: false,
       loading: false,
       showOk: false,
     };
@@ -39,7 +39,7 @@ function phaseFromTime(loopT: number): {
       visible: false,
       phase: "idle",
       count: null,
-      callLit: false,
+      pressed: false,
       loading: false,
       showOk: false,
     };
@@ -51,29 +51,29 @@ function phaseFromTime(loopT: number): {
       visible: true,
       phase: "countdown",
       count,
-      callLit: false,
+      pressed: false,
       loading: false,
       showOk: false,
     };
   }
 
-  if (p < 5.4) {
+  if (p < 5.25) {
     return {
       visible: true,
       phase: "call",
       count: null,
-      callLit: p >= 4.15,
+      pressed: p >= 4.35,
       loading: false,
       showOk: false,
     };
   }
 
-  if (p < 6.35) {
+  if (p < 5.85) {
     return {
       visible: true,
       phase: "loading",
       count: null,
-      callLit: false,
+      pressed: false,
       loading: true,
       showOk: false,
     };
@@ -83,18 +83,18 @@ function phaseFromTime(loopT: number): {
     visible: true,
     phase: "success",
     count: null,
-    callLit: false,
+    pressed: false,
     loading: false,
     showOk: true,
   };
 }
 
-/** Subtle map hint synced once per video loop. Decorative only. */
+/** Map call demo synced once per video loop. Decorative only. */
 export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) {
   const [visible, setVisible] = useState(false);
   const [phase, setPhase] = useState<DemoPhase>("idle");
   const [count, setCount] = useState<CountNum | null>(null);
-  const [callLit, setCallLit] = useState(false);
+  const [pressed, setPressed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showOk, setShowOk] = useState(false);
 
@@ -107,7 +107,7 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
       setVisible(next.visible);
       setPhase(next.phase);
       setCount(next.count);
-      setCallLit(next.callLit);
+      setPressed(next.pressed);
       setLoading(next.loading);
       setShowOk(next.showOk);
     };
@@ -151,28 +151,28 @@ export function HeroMapPredictionDemo({ videoRef }: HeroMapPredictionDemoProps) 
         ))}
       </div>
 
-      <p className={`hero-map-demo-call${phase === "call" ? " is-on" : ""}`}>
-        <span className={`hero-map-demo-call-text${callLit ? " is-lit" : ""}`}>
+      <div className={`hero-map-demo-actions${phase === "call" ? " is-on" : ""}`}>
+        <span className={`hero-map-demo-btn${pressed ? " is-pressed" : ""}`}>
           Turn left
         </span>
-      </p>
+      </div>
 
       <div className={`hero-map-demo-loading${loading ? " is-on" : ""}`} aria-hidden>
         <span className="hero-map-demo-spinner" />
       </div>
 
       <svg
-        viewBox="0 0 32 32"
+        viewBox="0 0 52 52"
         className={`hero-map-demo-ok${showOk ? " is-on" : ""}`}
         aria-hidden
       >
-        <circle className="hero-map-demo-ok-ring" cx="16" cy="16" r="13" />
+        <circle className="hero-map-demo-ok-ring" cx="26" cy="26" r="22" />
         <path
           className="hero-map-demo-ok-mark"
-          d="M9 16l4.5 4.5L23 10"
+          d="M14 27l8 8 16-18"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
