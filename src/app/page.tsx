@@ -56,8 +56,9 @@ export default function HomePage() {
             <p className="section-label">How it works</p>
             <h2 className="section-title">Three steps. Zero scripts.</h2>
             <p className="section-lead">
-              Every round runs on live GPS and a shared room timeline: your call
-              locks before the outcome, and everyone sees the same result.
+              Every round runs on live GPS and a shared room timeline. Your call
+              locks before the outcome; a neutral engine settles it from recorded
+              movement and fixed rules.
             </p>
 
             <div className="steps">
@@ -83,7 +84,8 @@ export default function HomePage() {
                 <h3>Win on the move</h3>
                 <p>
                   The route reveals the answer. Correct calls earn points for
-                  the round. Skill beats luck when you read the city.
+                  the round. Results are automatic—no one can rewrite them after
+                  lock.
                 </p>
               </article>
             </div>
@@ -155,10 +157,10 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="feature">
-                <h3>GPS-fair rounds</h3>
+                <h3>Neutral deciding engine</h3>
                 <p>
-                  Calls lock with distance rules. Outcomes settle from movement,
-                  not opinions.
+                  Predefined rules plus GPS movement settle every lock. Not the
+                  driver, not the crowd, not Crosstown.
                 </p>
               </div>
               <div className="feature">
@@ -168,6 +170,44 @@ export default function HomePage() {
                   game board.
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="fairness" className="fairness-section">
+          <div className="container">
+            <p className="section-label">Fair play</p>
+            <h2 className="section-title">Guaranteed fairness. Verifiable locks.</h2>
+            <p className="section-lead fairness-lead">
+              Once a call locks, the outcome is determined automatically by
+              predefined rules and recorded movement data. Neither the driver,
+              users, nor Crosstown can change the result afterward.
+            </p>
+
+            <div className="fairness-grid">
+              <article className="fairness-card">
+                <h3>Neutral resolution</h3>
+                <p>
+                  The deciding engine applies the same rules to every room. No
+                  manual overrides, no host picks, no post-lock edits—only GPS
+                  traces and the rule set that was active when the window closed.
+                </p>
+              </article>
+              <article className="fairness-card">
+                <h3>Fairness hash</h3>
+                <p>
+                  When a call locks, Crosstown publishes a SHA-256 hash of the
+                  lock event (rules, timestamps, and movement snapshot). After
+                  resolution, anyone can check that the lock data and resolution
+                  data still match the hash shown in the room.
+                </p>
+                <div className="fairness-hash-demo" aria-hidden>
+                  <span className="fairness-hash-label">Fairness hash</span>
+                  <code className="fairness-hash-value">
+                    a8f34e7b2c91d0e4…b7c8d9e1f2a3b4c5
+                  </code>
+                </div>
+              </article>
             </div>
           </div>
         </section>
@@ -199,8 +239,8 @@ export default function HomePage() {
                 <h3>Viewers</h3>
                 <p>
                   Follow the POV stream and map, read the next junction, and
-                  lock in your call before the window closes. Every outcome is
-                  settled from GPS.
+                  lock in your call before the window closes. Outcomes are
+                  rule-based and backed by a public fairness hash you can verify.
                 </p>
               </article>
               <article className="for-you-card">
@@ -246,6 +286,7 @@ export default function HomePage() {
           <nav className="footer-links" aria-label="Footer">
             <a href="#contact">Contact</a>
             <a href="#how-it-works">How it works</a>
+            <a href="#fairness">Fair play</a>
           </nav>
           <span>© {new Date().getFullYear()} Crosstown</span>
           <span className="footer-map-attrib">

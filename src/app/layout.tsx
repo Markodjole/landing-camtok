@@ -13,7 +13,7 @@ const exo2 = Exo_2({
 export const metadata: Metadata = {
   title: "Crosstown | Watch the drive. Call the next move.",
   description:
-    "A live POV prediction game. Watch real city drives and call the next turn, zone, or route before it happens.",
+    "A live POV prediction game with neutral, rule-based outcomes and public fairness hashes. Call the next turn, zone, or route before it happens.",
   metadataBase: new URL("https://playcrosstown.com"),
   openGraph: {
     title: "Crosstown | Watch the drive. Call the next move.",
