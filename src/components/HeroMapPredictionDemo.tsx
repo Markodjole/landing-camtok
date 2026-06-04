@@ -77,7 +77,7 @@ function phaseForVariant(p: number, variant: DemoVariant): DemoState {
       phase: "pin",
       count: null,
       pinBtnSec,
-      showPinLabel: false,
+      showPinLabel: true,
       pressed: false,
       loading: false,
       showOk: false,
