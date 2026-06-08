@@ -18,7 +18,7 @@ export default function HomePage() {
               <div className="hero-copy-inner">
               <div className="hero-badge">
                 <span className="hero-badge-dot" aria-hidden />
-                Live ride prediction game
+                Live iGaming
               </div>
               <div className="hero-media-stack">
                 <div className="hero-line hero-line-video">
@@ -30,10 +30,10 @@ export default function HomePage() {
                 />
               </div>
               <p className="hero-lead">
-                Crosstown is a live POV prediction game for city rides—bikes and
-                motorcycles first, car dashcam too. Real riders, real streets,
-                live GPS. Watch the stream, read the map, and call the next turn,
-                zone, or route before it happens.
+                A live iGaming product built on real-world movement prediction.
+                Watch POV city rides—bikes and motorcycles first, car dashcam
+                too. Real riders, real streets, live GPS. Read the map and call
+                the next turn, zone, or route before it happens.
               </p>
               <div className="hero-actions">
                 <a href="#early-access" className="btn-primary">
@@ -256,7 +256,7 @@ export default function HomePage() {
               <article className="for-you-card">
                 <h3>Partners &amp; press</h3>
                 <p>
-                  Building something in mobility, media, or live entertainment?
+                  Building in iGaming, mobility, media, or live entertainment?
                   We&apos;d love to hear from you. Reach out below.
                 </p>
               </article>
